@@ -60,6 +60,15 @@
       <a href="index.html#about"    class="nav-link">About</a>
       <a href="index.html#how"      class="nav-link">Process</a>
       <a href="index.html#reviews"  class="nav-link">Reviews</a>
+      <a href="http://localhost:3000/admin" class="nav-link" id="adminNavLink2">Admin</a>
+      <script>
+        (function(){
+          var h = window.location.hostname;
+          if (h && h !== 'localhost' && h !== '127.0.0.1') {
+            document.getElementById('adminNavLink2').href = 'https://worldclass-auto-repairs-pl41904fj-kevon-s-projects1.vercel.app/admin';
+          }
+        })();
+      </script>
     </div>
 
     <div class="nav-spacer"></div>
@@ -68,16 +77,6 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
       (876) 672-0125
     </div>
-
-    <a href="http://localhost:3000/admin" id="adminNavLink" style="font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;letter-spacing:.04em;margin-right:4px;" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Admin</a>
-    <script>
-      (function(){
-        var h = window.location.hostname;
-        if (h && h !== 'localhost' && h !== '127.0.0.1') {
-          document.getElementById('adminNavLink').href = 'https://worldclass-auto-repairs-pl41904fj-kevon-s-projects1.vercel.app/admin';
-        }
-      })();
-    </script>
 
     <button class="nav-hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
