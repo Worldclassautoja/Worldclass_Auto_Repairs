@@ -498,5 +498,5 @@ export default function AdminDashboard() {
 }
 
 function fi() {
-  return 'w-full px-3.5 py-2.5 border border-white/10 rounded-lg text-sm bg-[#1a1a1a] text-white focus:outline-none focus:border-primary/50 focus:shadow-[0_0_0_3px_rgba(245,166,35,.07)] transition-all appearance-none placeholder:text-white/25';
+  return 'w-full px-3.5 py-2.5 border border-white/10 rounded-lg text-sm bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 focus:shadow-[0_0_0_3px_rgba(245,166,35,.07)] transition-all appearance-none placeholder:text-white/25';
 }
