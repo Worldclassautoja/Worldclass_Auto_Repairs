@@ -88,7 +88,7 @@ export const SERVICE_PRESETS: ServicePreset[] = [
   { id: 'general-inspect',     category: 'Inspection',        name: 'General Vehicle Inspection',          estimated_hours: 1.5, base_cost:  5000, labor_rate: 3500 },
 ];
 
-export const PRESET_CATEGORIES = [...new Set(SERVICE_PRESETS.map(p => p.category))];
+export const PRESET_CATEGORIES = Array.from(new Set(SERVICE_PRESETS.map(p => p.category)));
 
 export function getPresetById(id: string): ServicePreset | undefined {
   return SERVICE_PRESETS.find(p => p.id === id);
