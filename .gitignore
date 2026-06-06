@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+worldclass-auto-app/.next/
+worldclass-auto-app/out/
+
+# Environment variables — NEVER commit these (contains API keys & DB credentials)
+.env
+.env.local
+.env.*.local
+worldclass-auto-app/.env
+worldclass-auto-app/.env.local
+worldclass-auto-app/.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+
+# Next.js cache
+worldclass-auto-app/.next/
+worldclass-auto-app/npm-debug.log*
+worldclass-auto-app/yarn-debug.log*
+worldclass-auto-app/yarn-error.log*

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorldClass Auto — Jamaica's Premier Automotive Service</title>
+  <meta name="description" content="Professional automotive repairs and maintenance in Jamaica. Engine diagnostics, brake service, transmission, electrical, AC, tyre alignment and more. Book online today." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="CSS/style.css" />
+  <style>
+    @keyframes heroFade { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .hero-label    { animation: heroFade .7s .05s ease both; }
+    .hero h1       { animation: heroFade .7s .15s ease both; }
+    .hero-desc     { animation: heroFade .7s .25s ease both; }
+    .hero-actions  { animation: heroFade .7s .35s ease both; }
+    .hero-trust    { animation: heroFade .7s .45s ease both; }
+    .hero-car      { animation: heroFade 1s  .4s  ease both; }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     ANNOUNCEMENT BAR
+     ============================================================ -->
+<div class="announce-bar">
+  <div class="announce-inner">
+    <div class="announce-left">
+      <a href="tel:8766720125">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+        876-672-0125
+      </a>
+      <span class="announce-sep">|</span>
+      <span class="announce-delivery">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        51B Waltham Park Rd, Shop 8 Padlock Plaza
+      </span>
+    </div>
+    <div class="announce-right">
+      <a href="index.html">Home</a>
+      <a href="tel:8766720125">Contact</a>
+      <a href="http://localhost:3000/admin" id="adminLink">Admin</a>
+      <script>
+        (function(){
+          var h = window.location.hostname;
+          if (h && h !== 'localhost' && h !== '127.0.0.1') {
+            document.getElementById('adminLink').href = '/admin';
+          }
+        })();
+      </script>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav class="navbar transparent" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-wca">WCA</span>
+      <span class="nav-logo-sub">World Class Auto</span>
+    </a>
+
+    <div class="nav-divider"></div>
+
+    <div class="nav-links">
+      <a href="#services" class="nav-link">Services</a>
+      <a href="#about"    class="nav-link">About</a>
+      <a href="#how"      class="nav-link">Process</a>
+      <a href="#reviews"  class="nav-link">Reviews</a>
+    </div>
+
+    <div class="nav-spacer"></div>
+
+    <div class="nav-phone">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+      (876) 672-0125
+    </div>
+
+    <a href="booking.html" class="nav-cta">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Book Now
+    </a>
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services">Services</a>
+    <a href="#about">About Us</a>
+    <a href="#how">Our Process</a>
+    <a href="#reviews">Reviews</a>
+    <a href="booking.html">Book Appointment →</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-line"></div>
+  <div class="hero-watermark">AUTO</div>
+
+  <!-- Car SVG -->
+  <svg class="hero-car" viewBox="0 0 620 270" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M52 194 L52 168 Q54 152 68 144 L148 116 Q178 87 238 81 L372 78 Q422 78 452 96 L522 126 Q548 141 554 164 L556 194 Z" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+    <path d="M160 168 L178 122 Q185 108 198 105 L240 98 L240 168 Z" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <path d="M250 98 L344 98 L344 168 L250 168 Z" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <path d="M354 98 L384 104 Q401 111 410 124 L422 168 L354 168 Z" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+    <line x1="248" y1="100" x2="248" y2="190" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    <line x1="352" y1="100" x2="352" y2="190" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+    <circle cx="160" cy="208" r="40" stroke="rgba(245,166,35,0.2)" stroke-width="1.5" fill="rgba(0,0,0,0.4)"/>
+    <circle cx="160" cy="208" r="26" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none"/>
+    <circle cx="160" cy="208" r="10" fill="rgba(245,166,35,0.12)"/>
+    <line x1="160" y1="182" x2="160" y2="198" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <line x1="160" y1="218" x2="160" y2="234" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <line x1="134" y1="208" x2="150" y2="208" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <line x1="170" y1="208" x2="186" y2="208" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <circle cx="422" cy="208" r="40" stroke="rgba(245,166,35,0.2)" stroke-width="1.5" fill="rgba(0,0,0,0.4)"/>
+    <circle cx="422" cy="208" r="26" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none"/>
+    <circle cx="422" cy="208" r="10" fill="rgba(245,166,35,0.12)"/>
+    <line x1="422" y1="182" x2="422" y2="198" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <line x1="422" y1="218" x2="422" y2="234" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <line x1="396" y1="208" x2="412" y2="208" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <line x1="432" y1="208" x2="448" y2="208" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+    <path d="M48 162 L66 156 L72 162 L54 168 Z" fill="rgba(245,166,35,0.3)"/>
+    <path d="M550 154 L558 159 L556 170 L548 165 Z" fill="rgba(220,38,38,0.5)"/>
+    <ellipse cx="291" cy="252" rx="220" ry="7" fill="rgba(0,0,0,0.3)"/>
+    <line x1="20" y1="248" x2="580" y2="248" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+  </svg>
+
+  <div class="container">
+    <div class="hero-body">
+
+      <div class="hero-label">
+        <div class="hero-label-line"></div>
+        <div class="hero-label-text">Jamaica's Premier Auto Service</div>
+      </div>
+
+      <h1>
+        Your Car Deserves<br>
+        <em>World Class</em> Care
+      </h1>
+
+      <p class="hero-desc">
+        Expert automotive repairs and maintenance right here in Jamaica. From quick diagnostics to full engine overhauls — certified service you can trust, every time.
+      </p>
+
+      <div class="hero-actions">
+        <a href="booking.html" class="btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Book an Appointment
+        </a>
+        <a href="#services" class="btn-ghost">
+          View Services
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="hero-trust">
+        <div class="trust-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Certified Mechanics
+        </div>
+        <div class="trust-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Same-Day Service Available
+        </div>
+        <div class="trust-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          All Makes &amp; Models
+        </div>
+        <div class="trust-item">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Serving All Parishes
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     METRICS STRIP
+     ============================================================ -->
+<div class="stats-strip">
+  <div class="stats-grid">
+    <div class="stat-item reveal">
+      <div class="stat-num">500+</div>
+      <div class="stat-lbl">Satisfied Customers</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-num">12</div>
+      <div class="stat-lbl">Service Categories</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-num">15+</div>
+      <div class="stat-lbl">Years of Excellence</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-num">98%</div>
+      <div class="stat-lbl">Satisfaction Rate</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SERVICES
+     ============================================================ -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label reveal">
+        <div class="section-label-line"></div>
+        <div class="section-label-text">What We Do</div>
+        <div class="section-label-line"></div>
+      </div>
+      <h2 class="section-title reveal">Comprehensive<br>Automotive Services</h2>
+      <p class="section-sub reveal">From routine maintenance to complex repairs — our certified technicians handle it all with precision and care.</p>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="service-name">General Repairs &amp; Maintenance</div>
+        <div class="service-desc">Comprehensive vehicle check-ups, fluid top-ups, filters, belts, and scheduled servicing.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="service-name">Engine Diagnostics &amp; Repair</div>
+        <div class="service-desc">Advanced computer diagnostics, fault code reading, and full engine rebuild services.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="service-name">Brake System Service</div>
+        <div class="service-desc">Brake pads, rotors, drums, calipers, and full hydraulic system inspections and repairs.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div class="service-name">Transmission Service</div>
+        <div class="service-desc">Auto and manual gearbox servicing, fluid changes, clutch replacements, and overhauls.</div>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="service-name">Suspension &amp; Steering</div>
+        <div class="service-desc">Shock absorbers, struts, tie rods, bushings, and full steering system diagnostics.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="service-name">Electrical System Repair</div>
+        <div class="service-desc">Wiring, alternators, starters, lighting, sensors, and ECU troubleshooting.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        </div>
+        <div class="service-name">Tyre Services &amp; Wheel Alignment</div>
+        <div class="service-desc">Fitting, balancing, puncture repair, rotation, and computerised alignment.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><line x1="23" y1="13" x2="23" y2="11"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="4" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="20" y2="12"/></svg>
+        </div>
+        <div class="service-name">Battery Testing &amp; Replacement</div>
+        <div class="service-desc">Load testing, voltage checks, and quality replacement batteries for all models.</div>
+      </div>
+
+      <div class="service-card reveal">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+        </div>
+        <div class="service-name">Oil &amp; Fluid Services</div>
+        <div class="service-desc">Engine oil changes, coolant flushes, brake fluid, power steering, and transmission oil.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+        </div>
+        <div class="service-name">Exhaust System Repair</div>
+        <div class="service-desc">Muffler replacement, pipe welding, catalytic converter service, and emissions checks.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="service-name">Pre-Purchase Inspection</div>
+        <div class="service-desc">Thorough report before you buy — mechanical, electrical, body, and safety checks.</div>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+        </div>
+        <div class="service-name">AC System Service</div>
+        <div class="service-desc">Refrigerant recharge, compressor diagnostics, leak detection, and full AC overhaul.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT
+     ============================================================ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-visual reveal">
+        <div class="about-img">
+          <svg width="220" height="220" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="70" stroke="currentColor" stroke-width="1" stroke-dasharray="6 4"/>
+            <path d="M70 110 L70 90 Q70 80 76 76 L100 65 L124 76 Q130 80 130 90 L130 110 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <circle cx="100" cy="100" r="15" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <path d="M100 85 L100 75" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M100 125 L100 115" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M115 100 L125 100" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M75 100 L85 100" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M55 140 L70 125 L80 128 L65 143 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+            <circle cx="52" cy="143" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          </svg>
+          <!-- Overlay metrics -->
+          <div class="about-metrics">
+            <div class="about-metric">
+              <div class="about-metric-num">500+</div>
+              <div class="about-metric-lbl">Vehicles Serviced</div>
+            </div>
+            <div class="about-metric">
+              <div class="about-metric-num">15+</div>
+              <div class="about-metric-lbl">Years Active</div>
+            </div>
+            <div class="about-metric">
+              <div class="about-metric-num">98%</div>
+              <div class="about-metric-lbl">Satisfaction</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-2">
+        <div class="section-label" style="margin-bottom:20px;">
+          <div class="section-label-line"></div>
+          <div class="section-label-text">About Us</div>
+        </div>
+        <h2 class="section-title" style="margin-bottom:24px;">Trusted by Jamaican<br>Drivers Since 2009</h2>
+        <p class="about-text">WorldClass Auto has been serving the Jamaican motoring community for over 15 years. We combine modern diagnostic technology with experienced, qualified technicians to deliver repairs done right the first time.</p>
+        <p class="about-text">Whether you drive a Japanese import, a local market vehicle, or a commercial fleet — we have the knowledge, equipment, and parts to get you back on the road.</p>
+
+        <div class="about-list">
+          <div class="about-list-item">
+            <div class="about-check">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span><strong style="color:#fff;font-weight:600;">Certified mechanics</strong> with JDM and modern vehicle expertise</span>
+          </div>
+          <div class="about-list-item">
+            <div class="about-check">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span><strong style="color:#fff;font-weight:600;">Genuine and OEM-quality parts</strong> sourced locally and internationally</span>
+          </div>
+          <div class="about-list-item">
+            <div class="about-check">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span><strong style="color:#fff;font-weight:600;">Transparent pricing</strong> — full cost confirmed before any work begins</span>
+          </div>
+          <div class="about-list-item">
+            <div class="about-check">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span><strong style="color:#fff;font-weight:600;">Online booking</strong> — schedule your appointment in under 2 minutes, 24/7</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label reveal">
+        <div class="section-label-line"></div>
+        <div class="section-label-text">Our Process</div>
+        <div class="section-label-line"></div>
+      </div>
+      <h2 class="section-title reveal">Service in Three Steps</h2>
+      <p class="section-sub reveal">Getting your vehicle serviced has never been simpler.</p>
+    </div>
+
+    <div class="steps-wrap">
+      <div class="step reveal">
+        <div class="step-num-wrap">
+          <div class="step-num">01</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-title">Book Online</div>
+        <p class="step-body">Fill out our quick booking form with your vehicle details, service type, and preferred date. Takes less than 2 minutes — available 24/7.</p>
+      </div>
+
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num-wrap">
+          <div class="step-num">02</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-title">Drop Off Your Vehicle</div>
+        <p class="step-body">Bring your car to our workshop. Our team inspects it, confirms the scope of work, and provides a clear quote before any work begins.</p>
+      </div>
+
+      <div class="step reveal reveal-delay-4">
+        <div class="step-num-wrap">
+          <div class="step-num">03</div>
+          <div class="step-num-line"></div>
+        </div>
+        <div class="step-title">Pick Up &amp; Drive</div>
+        <p class="step-body">We contact you the moment your vehicle is ready. Drive away knowing every job was completed to the highest standard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="testimonials" id="reviews">
+  <div class="container">
+    <div class="section-header center">
+      <div class="section-label reveal">
+        <div class="section-label-line"></div>
+        <div class="section-label-text">Client Reviews</div>
+        <div class="section-label-line"></div>
+      </div>
+      <h2 class="section-title reveal">What Our Clients Say</h2>
+      <p class="section-sub reveal">Hear from Jamaican drivers who trust WorldClass Auto with their vehicles.</p>
+    </div>
+
+    <div class="testi-grid">
+
+      <div class="testi-card reveal">
+        <div class="testi-quote">"</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <p class="testi-text">WorldClass Auto sorted out my Toyota Corolla's transmission issue in a single day. The team was professional, explained everything clearly, and the price was fair. I won't take my car anywhere else now.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">M</div>
+          <div>
+            <div class="testi-name">Marcus Thompson</div>
+            <div class="testi-location">Kingston, Jamaica</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-quote">"</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <p class="testi-text">Had a serious electrical fault in my Honda Fit that two other mechanics couldn't fix. WorldClass found and repaired it same day. Honest, skilled, and fast — highly recommend.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">D</div>
+          <div>
+            <div class="testi-name">Diane Brown</div>
+            <div class="testi-location">Spanish Town, St. Catherine</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-4">
+        <div class="testi-quote">"</div>
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <p class="testi-text">Booked online for a full brake service on my Nissan X-Trail. The team was ready when I arrived, the work was done in 3 hours, and the car drives like new. The online booking is so convenient.</p>
+        <div class="testi-author">
+          <div class="testi-avatar">K</div>
+          <div>
+            <div class="testi-name">Kevin Francis</div>
+            <div class="testi-location">Portmore, St. Catherine</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA BANNER
+     ============================================================ -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-inner">
+      <div class="cta-left reveal">
+        <div class="cta-label">
+          <div class="cta-label-line"></div>
+          <div class="cta-label-text">Get Started Today</div>
+        </div>
+        <h2>Ready to Book<br>Your Service?</h2>
+        <p>Schedule your appointment online in under 2 minutes. Our certified team is ready to get your vehicle performing at its best.</p>
+      </div>
+      <div class="cta-btns reveal reveal-delay-2">
+        <a href="booking.html" class="btn-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Book Appointment
+        </a>
+        <a href="tel:8766720125" class="btn-outline-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+          Call Us Directly
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <div class="footer-logo">WCA</div>
+        <span class="footer-logo-sub">World Class Auto</span>
+        <p class="footer-tagline">Jamaica's trusted automotive repair and maintenance specialists. Quality service you can count on, every time.</p>
+        <div class="footer-contacts">
+          <div class="footer-contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+            (876) 672-0125 &nbsp;|&nbsp; (876) 254-6914
+          </div>
+          <div class="footer-contact">
+            <!-- WhatsApp icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            (876) 462-9709 (WhatsApp)
+          </div>
+          <div class="footer-contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            worldclassautorepairs1@gmail.com
+          </div>
+          <a class="footer-contact" href="https://www.google.com/maps/search/?api=1&query=51B+Waltham+Park+Rd+Shop+8+Padlock+Plaza+Jamaica" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            51B Waltham Park Rd, Shop 8 Padlock Plaza
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;opacity:.5;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">General Repairs</a></li>
+          <li><a href="#services">Engine Diagnostics</a></li>
+          <li><a href="#services">Brake Service</a></li>
+          <li><a href="#services">Transmission</a></li>
+          <li><a href="#services">Electrical Repair</a></li>
+          <li><a href="#services">AC Service</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#how">Our Process</a></li>
+          <li><a href="#reviews">Client Reviews</a></li>
+          <li><a href="booking.html">Book Online</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Opening Hours</h4>
+        <ul>
+          <li style="color:rgba(255,255,255,.35);font-size:13px;line-height:2;font-weight:300;">Monday – Friday<br><span style="color:rgba(255,255,255,.7);font-weight:600;">8:00 AM – 6:00 PM</span></li>
+          <li style="color:rgba(255,255,255,.35);font-size:13px;line-height:2;font-weight:300;">Saturday<br><span style="color:rgba(255,255,255,.7);font-weight:600;">8:00 AM – 5:00 PM</span></li>
+          <li style="color:rgba(255,255,255,.35);font-size:13px;line-height:2;font-weight:300;">Sunday<br><span style="color:rgba(255,255,255,.25);">Closed</span></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 WorldClass Auto. All rights reserved.</span>
+      <span>Jamaica 🇯🇲</span>
+    </div>
+  </div>
+</footer>
+
+<script src="Js/app.js"></script>
+</body>
+</html>

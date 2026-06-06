@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-inter);
+  -webkit-font-smoothing: antialiased;
+  background: #0F0F0F;
+  color: #F9FAFB;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #1a1a1a; }
+::-webkit-scrollbar-thumb { background: #F5A623; border-radius: 3px; }
+
+/* Force dark text inside light-background form controls (admin/technician portals) */
+input, textarea, select { color: #111111; }
+
+/* Focus ring */
+*:focus-visible { outline: 2px solid #F5A623; outline-offset: 2px; }

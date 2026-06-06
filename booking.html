@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book an Appointment — WorldClass Auto Repairs</title>
+  <meta name="description" content="Book your automotive service appointment online with WorldClass Auto Repairs Jamaica. Choose your vehicle, service type, and preferred date." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="CSS/style.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     ANNOUNCEMENT BAR
+     ============================================================ -->
+<div class="announce-bar">
+  <div class="announce-inner">
+    <div class="announce-left">
+      <a href="tel:8766720125">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+        876-672-0125
+      </a>
+      <span class="announce-sep">|</span>
+      <span class="announce-delivery">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        51B Waltham Park Rd, Shop 8 Padlock Plaza
+      </span>
+    </div>
+    <div class="announce-right">
+      <a href="index.html">Home</a>
+      <a href="tel:8766720125">Contact</a>
+      <a href="http://localhost:3000/admin" id="adminLink">Admin</a>
+      <script>
+        (function(){
+          var h = window.location.hostname;
+          if (h && h !== 'localhost' && h !== '127.0.0.1') {
+            document.getElementById('adminLink').href = '/admin';
+          }
+        })();
+      </script>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     NAVBAR  (always opaque on this page)
+     ============================================================ -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-logo-wca">WCA</span>
+      <span class="nav-logo-sub">World Class Auto</span>
+    </a>
+
+    <div class="nav-divider"></div>
+
+    <div class="nav-links">
+      <a href="index.html#services" class="nav-link">Services</a>
+      <a href="index.html#about"    class="nav-link">About</a>
+      <a href="index.html#how"      class="nav-link">Process</a>
+      <a href="index.html#reviews"  class="nav-link">Reviews</a>
+    </div>
+
+    <div class="nav-spacer"></div>
+
+    <div class="nav-phone">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+      (876) 672-0125
+    </div>
+
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#about">About Us</a>
+    <a href="index.html#reviews">Reviews</a>
+    <a href="booking.html">Book Appointment →</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     BOOKING HERO HEADER
+     ============================================================ -->
+<div class="booking-hero">
+  <div class="booking-hero-inner">
+    <div class="container">
+      <div class="section-label" style="justify-content:center;margin-bottom:20px;">
+        <div class="section-label-line"></div>
+        <div class="section-label-text">Online Booking</div>
+        <div class="section-label-line"></div>
+      </div>
+      <h1>Book Your Appointment</h1>
+      <p>Fill in the details below and we'll confirm within 24 hours.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     BOOKING FORM + SIDEBAR
+     ============================================================ -->
+<div class="booking-main">
+  <div class="container">
+    <div class="booking-wrap">
+
+      <!-- ===== FORM CARD ===== -->
+      <div class="booking-card">
+        <div class="booking-card-title">Your Booking Details</div>
+
+        <!-- Success state (hidden until submitted) -->
+        <div class="form-success" id="formSuccess">
+          <div class="success-icon">✅</div>
+          <div class="success-title">Booking Request Submitted!</div>
+          <p class="success-body">
+            Thank you for booking with WorldClass Auto Repairs.<br>
+            We'll contact you within 24 hours to confirm your appointment.
+          </p>
+          <div class="success-ref">Your reference: <span id="bookingRef">WCA-XXXXXX</span></div>
+        </div>
+
+        <!-- The form -->
+        <form id="bookingForm" novalidate>
+
+          <!-- Name -->
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name <span class="req">*</span></label>
+            <input type="text" id="name" name="name" class="form-input" placeholder="e.g. John Brown" autocomplete="name" />
+            <div class="field-err" id="name-err"></div>
+          </div>
+
+          <!-- Email + Phone row -->
+          <div class="form-row-2">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label" for="email">Email Address <span class="req">*</span></label>
+              <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" autocomplete="email" />
+              <div class="field-err" id="email-err"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Phone Number <span class="req">*</span></label>
+              <div class="phone-row">
+                <div class="phone-code sel-wrap">
+                  <select id="areaCode" name="areaCode" class="form-select">
+                    <option value="+876">🇯🇲 +876</option>
+                    <option value="+658">🇯🇲 +658</option>
+                  </select>
+                </div>
+                <div class="phone-num">
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="462-9709" autocomplete="tel-national" />
+                </div>
+              </div>
+              <div class="field-err" id="phone-err"></div>
+            </div>
+          </div>
+
+          <!-- Vehicle Make + Model -->
+          <div class="form-row-2" style="margin-top:22px;">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label" for="make">Vehicle Make <span class="req">*</span></label>
+              <div class="sel-wrap">
+                <select id="make" name="vehicle_make" class="form-select">
+                  <option value="">Select make...</option>
+                  <option>Toyota</option>
+                  <option>Honda</option>
+                  <option>Nissan</option>
+                  <option>Mitsubishi</option>
+                  <option>Mazda</option>
+                  <option>Hyundai</option>
+                  <option>Kia</option>
+                  <option>Suzuki</option>
+                  <option>Ford</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field-err" id="make-err"></div>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label" for="model">Vehicle Model <span class="req">*</span></label>
+              <div class="sel-wrap" id="model-sel-wrap">
+                <select id="model" name="vehicle_model" class="form-select" disabled>
+                  <option value="">Select make first...</option>
+                </select>
+              </div>
+              <input type="text" id="model-text" name="vehicle_model_text" class="form-input" placeholder="Enter vehicle model" style="display:none;" />
+              <div class="field-err" id="model-err"></div>
+            </div>
+          </div>
+
+          <!-- Service Type -->
+          <div class="form-group" style="margin-top:22px;">
+            <label class="form-label" for="service">Service Type <span class="req">*</span></label>
+            <div class="sel-wrap">
+              <select id="service" name="service_type" class="form-select">
+                <option value="">Select a service...</option>
+                <option>General Repairs &amp; Maintenance</option>
+                <option>Engine Diagnostics &amp; Repair</option>
+                <option>Brake System Service</option>
+                <option>Transmission Service</option>
+                <option>Suspension &amp; Steering</option>
+                <option>Electrical System Repair</option>
+                <option>Tyre Services &amp; Wheel Alignment</option>
+                <option>Battery Testing &amp; Replacement</option>
+                <option>Oil &amp; Fluid Services</option>
+                <option>Exhaust System Repair</option>
+                <option>Pre-Purchase Vehicle Inspection</option>
+                <option>AC System Service</option>
+              </select>
+            </div>
+            <div class="field-err" id="service-err"></div>
+          </div>
+
+          <!-- Preferred Date -->
+          <div class="form-group">
+            <label class="form-label">Preferred Date <span class="req">*</span></label>
+            <div class="dp-wrap" id="datepicker">
+              <div class="dp-trigger" id="dpTrigger" role="button" aria-expanded="false" tabindex="0">
+                <span class="dp-placeholder">Choose a date (weekdays only)...</span>
+                <svg class="dp-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <input type="hidden" id="preferred_date" name="preferred_date" />
+
+              <!-- Calendar popup -->
+              <div class="dp-cal" id="dpCal">
+                <div class="dp-nav">
+                  <button type="button" class="dp-arrow" id="dpPrev">&#8249;</button>
+                  <span class="dp-month" id="dpMonthLabel"></span>
+                  <button type="button" class="dp-arrow" id="dpNext">&#8250;</button>
+                </div>
+                <div class="dp-wdays">
+                  <div class="dp-wd">Sun</div>
+                  <div class="dp-wd">Mon</div>
+                  <div class="dp-wd">Tue</div>
+                  <div class="dp-wd">Wed</div>
+                  <div class="dp-wd">Thu</div>
+                  <div class="dp-wd">Fri</div>
+                  <div class="dp-wd">Sat</div>
+                </div>
+                <div class="dp-days" id="dpDays"></div>
+              </div>
+            </div>
+            <div class="field-err" id="date-err"></div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label class="form-label" for="description">Additional Notes <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
+            <textarea id="description" name="description" class="form-textarea" placeholder="Any extra details about your vehicle issue, symptoms, or special requests..."></textarea>
+            <div class="form-hint">No diagnosis needed — just describe what you're experiencing.</div>
+          </div>
+
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Submit Booking Request
+          </button>
+
+        </form>
+      </div>
+
+      <!-- ===== SIDEBAR ===== -->
+      <div class="booking-sidebar">
+
+        <!-- Contact info -->
+        <div class="sb-card">
+          <h4>Contact Us Directly</h4>
+          <div class="info-row">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+            </div>
+            <div>
+              <strong>(876) 672-0125</strong>
+              <small>(876) 254-6914</small>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </div>
+            <div>
+              <strong>(876) 462-9709</strong>
+              <small>WhatsApp available</small>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <strong>worldclassautorepairs1@gmail.com</strong>
+              <small>We reply within 24 hours</small>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <strong>51B Waltham Park Rd</strong>
+              <small>Shop 8 Padlock Plaza, Jamaica</small>
+              <a href="https://www.google.com/maps/search/?api=1&query=51B+Waltham+Park+Rd+Shop+8+Padlock+Plaza+Jamaica" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:4px;margin-top:5px;font-size:11px;color:var(--gold);font-weight:600;letter-spacing:.5px;text-decoration:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Find on Google Maps
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opening hours -->
+        <div class="sb-card">
+          <h4>Opening Hours</h4>
+          <div class="hrs-row"><span class="day">Monday – Friday</span><span>8:00 AM – 6:00 PM</span></div>
+          <div class="hrs-row"><span class="day">Saturday</span><span>8:00 AM – 5:00 PM</span></div>
+          <div class="hrs-row"><span class="day">Sunday</span><span style="color:var(--text-3);">Closed</span></div>
+        </div>
+
+        <!-- Note box -->
+        <div class="sb-card">
+          <h4>Good to Know</h4>
+          <div class="note-box">
+            📋 Bookings are confirmed within 24 hours via phone or email. For urgent same-day service, please call us directly at <strong>(876) 672-0125</strong> or WhatsApp <strong>(876) 462-9709</strong>.
+          </div>
+          <div style="margin-top:14px;font-size:13px;color:var(--muted);line-height:1.6;">
+            Weekends fill up fast — we recommend booking at least <strong>2–3 days ahead</strong> for Saturday appointments.
+          </div>
+        </div>
+
+      </div>
+      <!-- end sidebar -->
+
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">WCA</div>
+        <span class="footer-logo-sub">World Class Auto</span>
+        <p class="footer-tagline">Jamaica's trusted automotive repair and maintenance specialists.</p>
+        <div class="footer-contacts">
+          <div class="footer-contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.18 13.5 19.79 19.79 0 0 1 1.08 4.82a2 2 0 0 1 1.99-2.18h3a2 2 0 0 1 2 1.72c.13.96.38 1.9.72 2.81a2 2 0 0 1-.45 2.11L7.09 10.91a16 16 0 0 0 6 6l1.45-1.45a2 2 0 0 1 2.11-.45c.91.34 1.85.59 2.81.72a2 2 0 0 1 1.72 2.03z"/></svg>
+            (876) 672-0125 &nbsp;|&nbsp; (876) 254-6914
+          </div>
+          <div class="footer-contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            (876) 462-9709 (WhatsApp)
+          </div>
+          <div class="footer-contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            worldclassautorepairs1@gmail.com
+          </div>
+          <a class="footer-contact" href="https://www.google.com/maps/search/?api=1&query=51B+Waltham+Park+Rd+Shop+8+Padlock+Plaza+Jamaica" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            51B Waltham Park Rd, Shop 8 Padlock Plaza
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;opacity:.5;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="index.html#services">General Repairs</a></li>
+          <li><a href="index.html#services">Engine Diagnostics</a></li>
+          <li><a href="index.html#services">Brake Service</a></li>
+          <li><a href="index.html#services">Tyre Alignment</a></li>
+          <li><a href="index.html#services">AC Service</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#about">About Us</a></li>
+          <li><a href="index.html#how">How It Works</a></li>
+          <li><a href="index.html#reviews">Reviews</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hours</h4>
+        <ul>
+          <li style="color:rgba(255,255,255,.35);font-size:13px;line-height:2;font-weight:300;">Mon – Fri<br><span style="color:rgba(255,255,255,.7);font-weight:600;">8:00 AM – 6:00 PM</span></li>
+          <li style="color:rgba(255,255,255,.35);font-size:13px;line-height:2;font-weight:300;">Saturday<br><span style="color:rgba(255,255,255,.7);font-weight:600;">8:00 AM – 5:00 PM</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 WorldClass Auto Repairs. All rights reserved.</span>
+      <span>Jamaica 🇯🇲</span>
+    </div>
+  </div>
+</footer>
+
+<script src="Js/app.js"></script>
+</body>
+</html>
