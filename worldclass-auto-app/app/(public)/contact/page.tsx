@@ -134,7 +134,7 @@ export default function ContactPage() {
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyqe1U_KIO9MaM5WSHN2ItdAM0YY&q=51B+Waltham+Park+Road+Kingston+Jamaica"
+                src="https://maps.google.com/maps?q=51B+Waltham+Park+Road,+Kingston,+Jamaica&z=15&output=embed"
               />
             </div>
 
