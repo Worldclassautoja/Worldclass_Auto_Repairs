@@ -48,7 +48,7 @@ export default function HomePage() {
         <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px)', backgroundSize: '64px 64px' }} />
         <div className="absolute right-[8%] top-1/2 -translate-y-1/2 w-[50vw] h-[50vw] rounded-full" style={{ background: 'radial-gradient(ellipse,rgba(220,38,38,.13) 0%,transparent 65%)' }} />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 pt-32">
+        <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 pt-40">
           <div className="inline-flex items-center gap-2 bg-red-600/10 border border-red-600/25 text-red-300 px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase mb-7">
             <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
             Jamaica's Premier Auto Service

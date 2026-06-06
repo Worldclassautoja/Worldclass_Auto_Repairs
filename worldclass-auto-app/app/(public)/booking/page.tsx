@@ -155,7 +155,7 @@ export default function BookingPage() {
       <Navbar />
 
       {/* Header */}
-      <div className="relative bg-gradient-to-br from-[#0c0c0c] via-[#1a0404] to-[#230808] pt-32 pb-14 text-center overflow-hidden">
+      <div className="relative bg-gradient-to-br from-[#0c0c0c] via-[#1a0404] to-[#230808] pt-40 pb-14 text-center overflow-hidden">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 80%,rgba(220,38,38,.1) 0%,transparent 60%)' }} />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-1.5 bg-red-600/10 border border-red-600/25 text-red-300 px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase mb-4">Online Booking</div>
