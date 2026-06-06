@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Calendar, Phone, Mail, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Phone, Mail, MapPin, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -131,18 +131,21 @@ export default function BookingPage() {
     return (
       <>
         <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-20 pb-20">
-          <div className="max-w-md w-full mx-4 bg-white rounded-2xl border border-gray-200 p-12 text-center shadow-sm">
-            <div className="text-6xl mb-4">✅</div>
-            <h2 className="text-[22px] font-black text-green-700 mb-2">Booking Submitted!</h2>
-            <p className="text-[14px] text-green-800/80 leading-relaxed mb-1">
-              Thank you for booking with WorldClass Auto Repairs.<br/>
-              We'll contact you within 24 hours to confirm.
-            </p>
-            <div className="mt-4 text-[13px] text-green-700 font-bold">
-              Your reference: <span className="bg-green-50 px-2 py-0.5 rounded-md">{success}</span>
+        <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center pt-24 pb-24">
+          <div className="max-w-md w-full mx-4 bg-[#111] border border-white/[0.08] rounded-2xl p-12 text-center shadow-2xl">
+            <div className="w-16 h-16 bg-primary/10 border border-primary/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5A623" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <a href="/" className="mt-8 inline-flex items-center gap-1.5 text-primary font-semibold text-sm">← Back to Home</a>
+            <h2 className="text-[22px] font-black text-white mb-3">Booking Submitted!</h2>
+            <p className="text-[14px] text-white/50 leading-relaxed mb-6">
+              Thank you for booking with WorldClass Auto.<br/>
+              We&apos;ll contact you within 24 hours to confirm your appointment.
+            </p>
+            <div className="bg-primary/8 border border-primary/20 rounded-xl px-6 py-4 mb-8">
+              <div className="text-[11px] text-primary/70 font-bold uppercase tracking-widest mb-1">Your Reference</div>
+              <div className="text-[24px] font-black text-primary tracking-widest">{success}</div>
+            </div>
+            <a href="/" className="inline-flex items-center gap-1.5 text-white/50 hover:text-white font-medium text-sm transition-colors">← Back to Home</a>
           </div>
         </div>
         <Footer />
@@ -154,124 +157,148 @@ export default function BookingPage() {
     <>
       <Navbar />
 
-      {/* Header */}
-      <div className="relative bg-gradient-to-br from-[#0c0c0c] via-[#1a0404] to-[#230808] pt-40 pb-14 text-center overflow-hidden">
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 80%,rgba(220,38,38,.1) 0%,transparent 60%)' }} />
+      {/* ===== HERO HEADER ===== */}
+      <div className="relative bg-[#000] pt-40 pb-16 text-center overflow-hidden">
+        <div className="absolute inset-0"
+          style={{ backgroundImage: 'linear-gradient(rgba(245,166,35,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,.03) 1px,transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 100%,rgba(245,166,35,.07) 0%,transparent 60%)' }} />
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-1.5 bg-red-600/10 border border-red-600/25 text-red-300 px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase mb-4">Online Booking</div>
-          <h1 className="text-[clamp(30px,4vw,48px)] font-black text-white tracking-tight mb-3">Book Your Appointment</h1>
-          <p className="text-[16px] text-white/55">Fill in the details below and we'll confirm within 24 hours.</p>
+          <div className="inline-flex items-center gap-2 border border-primary/30 bg-primary/8 text-primary text-[11px] font-bold tracking-[.12em] uppercase px-4 py-2 rounded-full mb-6">
+            <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+            Online Booking
+          </div>
+          <h1 className="text-[clamp(36px,6vw,80px)] font-black text-white tracking-[-0.02em] leading-none mb-5">
+            Book Your Appointment
+          </h1>
+          <p className="text-[16px] text-white/45 max-w-[440px] mx-auto leading-relaxed">
+            Fill in the details below and we&apos;ll confirm your appointment within 24 hours.
+          </p>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="bg-gray-50 py-16 pb-24">
+      {/* ===== BODY ===== */}
+      <div className="form-dark bg-[#0A0A0A] py-14 pb-24">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid lg:grid-cols-[1fr_320px] gap-8 items-start">
+          <div className="grid lg:grid-cols-[1fr_320px] gap-6 items-start">
 
-            {/* Form card */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-10 shadow-sm">
-              <div className="text-[18px] font-black mb-7">Your Booking Details</div>
+            {/* ===== FORM CARD ===== */}
+            <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-8 md:p-10">
+              <div className="text-[11px] font-bold text-primary tracking-[.12em] uppercase mb-2">Step 1 of 1</div>
+              <div className="text-[20px] font-black text-white mb-7">Your Booking Details</div>
 
               <form onSubmit={handleSubmit} noValidate>
                 {/* Name */}
-                <Field label="Full Name" required error={errors.name}>
-                  <input className={input(errors.name)} type="text" placeholder="e.g. John Brown" value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} />
-                </Field>
+                <DField label="Full Name" required error={errors.name}>
+                  <input className={di(errors.name)} type="text" placeholder="e.g. John Brown"
+                    value={form.name} onChange={e => setForm(f => ({...f, name: e.target.value}))} />
+                </DField>
 
                 {/* Email + Phone */}
                 <div className="grid sm:grid-cols-2 gap-4 mb-5">
-                  <Field label="Email Address" required error={errors.email}>
-                    <input className={input(errors.email)} type="email" placeholder="you@example.com" value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} />
-                  </Field>
-                  <Field label="Phone Number" required error={errors.phone}>
+                  <DField label="Email Address" required error={errors.email}>
+                    <input className={di(errors.email)} type="email" placeholder="you@example.com"
+                      value={form.email} onChange={e => setForm(f => ({...f, email: e.target.value}))} />
+                  </DField>
+                  <DField label="Phone Number" required error={errors.phone}>
                     <div className="flex gap-2">
                       <div className="relative w-[115px] flex-shrink-0">
-                        <select className={input() + ' pr-8 cursor-pointer'} value={form.areaCode} onChange={e => setForm(f => ({...f, areaCode: e.target.value}))}>
+                        <select className={di() + ' pr-8 cursor-pointer'} value={form.areaCode}
+                          onChange={e => setForm(f => ({...f, areaCode: e.target.value}))}>
                           <option value="+876">🇯🇲 +876</option>
                           <option value="+658">🇯🇲 +658</option>
                         </select>
-                        <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none rotate-90" />
+                        <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none rotate-90" />
                       </div>
-                      <input className={input(errors.phone) + ' flex-1'} type="tel" placeholder="462-9709" value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} />
+                      <input className={di(errors.phone) + ' flex-1'} type="tel" placeholder="462-9709"
+                        value={form.phone} onChange={e => setForm(f => ({...f, phone: e.target.value}))} />
                     </div>
-                  </Field>
+                  </DField>
                 </div>
 
                 {/* Make + Model */}
                 <div className="grid sm:grid-cols-2 gap-4 mb-5">
-                  <Field label="Vehicle Make" required error={errors.make}>
+                  <DField label="Vehicle Make" required error={errors.make}>
                     <div className="relative">
-                      <select className={input(errors.make) + ' cursor-pointer pr-8'}
+                      <select className={di(errors.make) + ' cursor-pointer pr-8'}
                         value={form.make}
                         onChange={e => setForm(f => ({...f, make: e.target.value, model: '', modelOther: ''}))}>
                         <option value="">Select make...</option>
                         {Object.keys(MODELS).map(m => <option key={m}>{m}</option>)}
                         <option>Other</option>
                       </select>
-                      <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none rotate-90" />
+                      <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none rotate-90" />
                     </div>
-                  </Field>
-                  <Field label="Vehicle Model" required error={errors.model}>
+                  </DField>
+                  <DField label="Vehicle Model" required error={errors.model}>
                     {form.make === 'Other' ? (
-                      <input className={input(errors.model)} type="text" placeholder="Enter vehicle model" value={form.modelOther} onChange={e => setForm(f => ({...f, modelOther: e.target.value}))} />
+                      <input className={di(errors.model)} type="text" placeholder="Enter vehicle model"
+                        value={form.modelOther} onChange={e => setForm(f => ({...f, modelOther: e.target.value}))} />
                     ) : (
                       <div className="relative">
-                        <select className={input(errors.model) + ' cursor-pointer pr-8'} value={form.model} onChange={e => setForm(f => ({...f, model: e.target.value}))} disabled={!form.make}>
+                        <select className={di(errors.model) + ' cursor-pointer pr-8'}
+                          value={form.model}
+                          onChange={e => setForm(f => ({...f, model: e.target.value}))}
+                          disabled={!form.make}>
                           <option value="">{form.make ? 'Select model...' : 'Select make first...'}</option>
                           {(MODELS[form.make] ?? []).map(m => <option key={m}>{m}</option>)}
                         </select>
-                        <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none rotate-90" />
+                        <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none rotate-90" />
                       </div>
                     )}
-                  </Field>
+                  </DField>
                 </div>
 
                 {/* Service */}
-                <Field label="Service Type" required error={errors.service}>
+                <DField label="Service Type" required error={errors.service}>
                   <div className="relative">
-                    <select className={input(errors.service) + ' cursor-pointer pr-8'} value={form.service} onChange={e => setForm(f => ({...f, service: e.target.value}))}>
+                    <select className={di(errors.service) + ' cursor-pointer pr-8'}
+                      value={form.service}
+                      onChange={e => setForm(f => ({...f, service: e.target.value}))}>
                       <option value="">Select a service...</option>
                       {SERVICES.map(s => <option key={s}>{s}</option>)}
                     </select>
-                    <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none rotate-90" />
+                    <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none rotate-90" />
                   </div>
-                </Field>
+                </DField>
 
                 {/* Date picker */}
-                <Field label="Preferred Date" required error={errors.date}>
+                <DField label="Preferred Date" required error={errors.date}>
                   <div className="relative" ref={calRef}>
                     <button
                       type="button"
                       onClick={() => setCalOpen(o => !o)}
-                      className={`w-full px-3.5 py-2.5 border rounded-lg text-left text-sm flex items-center justify-between transition-all ${errors.date ? 'border-red-400' : calOpen ? 'border-primary shadow-[0_0_0_3px_rgba(220,38,38,.09)]' : 'border-gray-200 hover:border-primary'}`}
+                      className={`w-full px-3.5 py-2.5 border rounded-lg text-left text-sm flex items-center justify-between transition-all bg-[#1a1a1a] text-white ${errors.date ? 'border-red-400/60' : calOpen ? 'border-primary/60 shadow-[0_0_0_3px_rgba(245,166,35,.08)]' : 'border-white/10 hover:border-white/25'}`}
                     >
                       {selectedDate
-                        ? <span className="font-medium text-gray-900">{formatDate(selectedDate)}</span>
-                        : <span className="text-gray-400">Choose a date (weekdays only)...</span>
+                        ? <span className="font-medium text-white">{formatDate(selectedDate)}</span>
+                        : <span className="text-white/30">Choose a date (weekdays only)...</span>
                       }
-                      <Calendar size={15} className="text-gray-400" />
+                      <Calendar size={15} className="text-white/30" />
                     </button>
 
                     {calOpen && (
-                      <div className="absolute top-[calc(100%+8px)] left-0 z-50 w-[300px] bg-white border border-gray-200 rounded-xl shadow-2xl p-4">
+                      <div className="absolute top-[calc(100%+8px)] left-0 z-50 w-[300px] bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl p-4">
                         <div className="flex items-center justify-between mb-3.5">
-                          <button type="button" onClick={prevMonth} className="w-7 h-7 border border-gray-200 rounded-md flex items-center justify-center text-gray-500 hover:border-primary hover:text-primary transition-colors"><ChevronLeft size={14} /></button>
-                          <span className="text-[14px] font-bold">{MONTHS[viewMonth]} {viewYear}</span>
-                          <button type="button" onClick={nextMonth} className="w-7 h-7 border border-gray-200 rounded-md flex items-center justify-center text-gray-500 hover:border-primary hover:text-primary transition-colors"><ChevronRight size={14} /></button>
+                          <button type="button" onClick={prevMonth} className="w-7 h-7 border border-white/10 rounded-md flex items-center justify-center text-white/50 hover:border-primary hover:text-primary transition-colors">
+                            <ChevronLeft size={14} />
+                          </button>
+                          <span className="text-[14px] font-bold text-white">{MONTHS[viewMonth]} {viewYear}</span>
+                          <button type="button" onClick={nextMonth} className="w-7 h-7 border border-white/10 rounded-md flex items-center justify-center text-white/50 hover:border-primary hover:text-primary transition-colors">
+                            <ChevronRight size={14} />
+                          </button>
                         </div>
                         <div className="grid grid-cols-7 mb-1.5">
-                          {DAYS.map(d => <div key={d} className="text-center text-[10px] font-bold text-gray-400 py-1 uppercase">{d}</div>)}
+                          {DAYS.map(d => <div key={d} className="text-center text-[10px] font-bold text-white/30 py-1 uppercase">{d}</div>)}
                         </div>
                         <div className="grid grid-cols-7 gap-0.5">
                           {Array.from({ length: firstDow }).map((_, i) => <div key={`e${i}`} />)}
                           {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => {
                             const date = new Date(viewYear, viewMonth, d); date.setHours(0,0,0,0);
-                            const dow = date.getDay();
-                            const isWknd = dow === 0 || dow === 6;
-                            const isPast = date < today;
+                            const dow  = date.getDay();
+                            const isWknd  = dow === 0 || dow === 6;
+                            const isPast  = date < today;
                             const isToday = date.getTime() === today.getTime();
-                            const isSel  = selectedDate?.getTime() === date.getTime();
+                            const isSel   = selectedDate?.getTime() === date.getTime();
                             const disabled = isWknd || isPast;
                             return (
                               <button
@@ -279,10 +306,10 @@ export default function BookingPage() {
                                 disabled={disabled}
                                 onClick={() => selectDay(d)}
                                 className={`aspect-square flex items-center justify-center text-[13px] font-medium rounded-md transition-colors
-                                  ${isSel ? 'bg-primary text-white' : ''}
-                                  ${isToday && !isSel ? 'border-2 border-primary text-primary font-bold' : ''}
-                                  ${!disabled && !isSel && !isToday ? 'hover:bg-red-50 hover:text-primary' : ''}
-                                  ${disabled ? 'text-gray-200 cursor-not-allowed' : 'cursor-pointer'}
+                                  ${isSel ? 'bg-primary text-black' : ''}
+                                  ${isToday && !isSel ? 'border border-primary text-primary font-bold' : ''}
+                                  ${!disabled && !isSel && !isToday ? 'text-white/70 hover:bg-primary/15 hover:text-primary' : ''}
+                                  ${disabled ? 'text-white/15 cursor-not-allowed' : 'cursor-pointer'}
                                 `}
                               >{d}</button>
                             );
@@ -291,95 +318,109 @@ export default function BookingPage() {
                       </div>
                     )}
                   </div>
-                </Field>
+                </DField>
 
-                {/* Description */}
-                <div className="mb-6">
-                  <label className="block text-[13px] font-semibold text-gray-800 mb-1.5">
-                    Additional Notes <span className="text-gray-400 font-normal">(optional)</span>
+                {/* Notes */}
+                <div className="mb-7">
+                  <label className="block text-[12px] font-bold text-white/50 uppercase tracking-[.08em] mb-2">
+                    Additional Notes <span className="text-white/25 font-normal normal-case tracking-normal">(optional)</span>
                   </label>
                   <textarea
                     rows={3}
-                    placeholder="Any extra details about your vehicle issue, symptoms, or special requests..."
-                    className="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 resize-y min-h-[88px] focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(220,38,38,.09)] transition-all"
+                    placeholder="Describe what you're experiencing with your vehicle..."
+                    className="w-full px-3.5 py-2.5 border border-white/10 rounded-lg text-sm bg-[#1a1a1a] focus:outline-none focus:border-primary/50 focus:shadow-[0_0_0_3px_rgba(245,166,35,.07)] transition-all resize-y min-h-[88px] placeholder:text-white/20"
+                    style={{ color: 'white' }}
                     value={form.description}
                     onChange={e => setForm(f => ({...f, description: e.target.value}))}
                   />
-                  <div className="text-[12px] text-gray-400 mt-1">No diagnosis needed — just describe what you're experiencing.</div>
+                  <div className="text-[12px] text-white/25 mt-1">No diagnosis needed — just describe what you&apos;re experiencing.</div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold text-[15px] py-3.5 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-red-500/30"
+                  className="w-full bg-primary hover:bg-primary-dark text-black font-bold text-[15px] py-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed hover:shadow-2xl hover:shadow-primary/25 hover:-translate-y-0.5"
                 >
                   {submitting
-                    ? <><span className="animate-spin border-2 border-white/30 border-t-white rounded-full w-4 h-4" /> Submitting...</>
+                    ? <><span className="animate-spin border-2 border-black/20 border-t-black rounded-full w-4 h-4" /> Submitting...</>
                     : <><Calendar size={16} /> Submit Booking Request</>
                   }
                 </button>
               </form>
             </div>
 
-            {/* Sidebar */}
-            <div className="flex flex-col gap-5">
-              <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                <h4 className="text-[14px] font-bold mb-4">Contact Us Directly</h4>
+            {/* ===== SIDEBAR ===== */}
+            <div className="flex flex-col gap-4">
+
+              {/* Contact */}
+              <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6">
+                <div className="text-[11px] font-bold text-white/40 uppercase tracking-[.1em] mb-5">Contact Us Directly</div>
                 {[
-                  { Icon: Phone, label: '(876) 462-9709',                sub: 'Mon – Sat, 8 AM – 6 PM'     },
-                  { Icon: Mail,  label: 'worldclassautorepairs1@gmail.com', sub: 'We reply within 24 hours' },
-                  { Icon: MapPin, label: 'Jamaica',                       sub: 'Serving all parishes'       },
+                  { Icon: Phone,         label: '(876) 672-0125',                   sub: '(876) 254-6914'            },
+                  { Icon: MessageCircle, label: '(876) 462-9709',                   sub: 'WhatsApp available'        },
+                  { Icon: Mail,          label: 'worldclassautorepairs1@gmail.com', sub: 'We reply within 24 hours'  },
+                  { Icon: MapPin,        label: '51B Waltham Park Rd',              sub: 'Shop 8 Padlock Plaza'      },
                 ].map(({ Icon, label, sub }) => (
-                  <div key={label} className="flex items-start gap-3 mb-3 last:mb-0">
-                    <div className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-primary flex-shrink-0"><Icon size={14} /></div>
-                    <div><div className="text-[13px] font-semibold">{label}</div><div className="text-[12px] text-gray-400">{sub}</div></div>
+                  <div key={label} className="flex items-start gap-3.5 mb-4 last:mb-0">
+                    <div className="w-9 h-9 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary flex-shrink-0">
+                      <Icon size={15} />
+                    </div>
+                    <div>
+                      <div className="text-[13px] font-semibold text-white">{label}</div>
+                      <div className="text-[12px] text-white/35">{sub}</div>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                <h4 className="text-[14px] font-bold mb-4">Opening Hours</h4>
+              {/* Hours */}
+              <div className="bg-[#111] border border-white/[0.07] rounded-2xl p-6">
+                <div className="text-[11px] font-bold text-white/40 uppercase tracking-[.1em] mb-4">Opening Hours</div>
                 {[
-                  { day: 'Monday – Friday', hrs: '8:00 AM – 6:00 PM' },
-                  { day: 'Saturday',        hrs: '9:00 AM – 4:00 PM' },
-                  { day: 'Sunday',          hrs: 'Closed'            },
-                ].map(({ day, hrs }) => (
-                  <div key={day} className="flex justify-between text-[13px] py-2 border-b border-gray-100 last:border-0">
-                    <span className="font-semibold">{day}</span>
-                    <span className={hrs === 'Closed' ? 'text-gray-400' : 'text-gray-700'}>{hrs}</span>
+                  { day: 'Monday – Friday', hrs: '8:00 AM – 6:00 PM', open: true  },
+                  { day: 'Saturday',        hrs: '8:00 AM – 5:00 PM', open: true  },
+                  { day: 'Sunday',          hrs: 'Closed',            open: false },
+                ].map(({ day, hrs, open }) => (
+                  <div key={day} className="flex justify-between items-center py-2.5 border-b border-white/[0.05] last:border-0">
+                    <span className="text-[13px] text-white/50">{day}</span>
+                    <span className={`text-[13px] font-semibold ${open ? 'text-white' : 'text-white/25'}`}>{hrs}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                <h4 className="text-[14px] font-bold mb-3">Good to Know</h4>
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 text-[12.5px] text-orange-900 leading-relaxed">
-                  📋 Bookings are confirmed within 24 hours via phone or email. For urgent same-day service, call <strong>(876) 462-9709</strong> directly.
-                </div>
-                <p className="text-[13px] text-gray-500 mt-3 leading-relaxed">Weekends fill up fast — book at least <strong>2–3 days ahead</strong> for Saturday appointments.</p>
+              {/* Good to know */}
+              <div className="bg-primary/8 border border-primary/20 rounded-2xl p-6">
+                <div className="text-[11px] font-bold text-primary/80 uppercase tracking-[.1em] mb-3">Good to Know</div>
+                <p className="text-[13px] text-white/55 leading-relaxed mb-3">
+                  Bookings are confirmed within 24 hours via phone or email. For urgent same-day service, call <strong className="text-white">(876) 462-9709</strong>.
+                </p>
+                <p className="text-[12px] text-white/35 leading-relaxed">
+                  Weekends fill up fast — book at least 2–3 days ahead for Saturday appointments.
+                </p>
               </div>
-            </div>
 
+            </div>
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );
 }
 
-function Field({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
+function DField({ label, required, error, children }: { label: string; required?: boolean; error?: string; children: React.ReactNode }) {
   return (
     <div className="mb-5">
-      <label className="block text-[13px] font-semibold text-gray-800 mb-1.5">
+      <label className="block text-[12px] font-bold text-white/50 uppercase tracking-[.08em] mb-2">
         {label} {required && <span className="text-primary">*</span>}
       </label>
       {children}
-      {error && <p className="text-[12px] text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-[12px] text-red-400 mt-1.5">{error}</p>}
     </div>
   );
 }
 
-function input(error?: string) {
-  return `w-full px-3.5 py-2.5 border rounded-lg text-sm text-gray-900 bg-white focus:outline-none transition-all appearance-none ${error ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-primary focus:shadow-[0_0_0_3px_rgba(220,38,38,.09)]'} disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed`;
+function di(error?: string) {
+  return `w-full px-3.5 py-2.5 border rounded-lg text-sm bg-[#1a1a1a] focus:outline-none transition-all appearance-none placeholder:text-white/20 ${error ? 'border-red-400/60 focus:border-red-400/60' : 'border-white/10 focus:border-primary/50 focus:shadow-[0_0_0_3px_rgba(245,166,35,.07)]'} disabled:opacity-40 disabled:cursor-not-allowed`;
 }

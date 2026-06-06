@@ -20,8 +20,10 @@ body {
 ::-webkit-scrollbar-track { background: #1a1a1a; }
 ::-webkit-scrollbar-thumb { background: #F5A623; border-radius: 3px; }
 
-/* Force dark text inside light-background form controls (admin/technician portals) */
-input, textarea, select { color: #111111; }
+/* Admin/technician portals use light backgrounds — force dark input text */
+.portal-light input, .portal-light textarea, .portal-light select { color: #111111; }
+/* Dark booking form — force white input text */
+.form-dark input, .form-dark textarea, .form-dark select { color: #ffffff; }
 
 /* Focus ring */
 *:focus-visible { outline: 2px solid #F5A623; outline-offset: 2px; }
