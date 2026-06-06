@@ -33,6 +33,12 @@ export default function AdminDashboard() {
   const [techs, setTechs]       = useState<Technician[]>([]);
   const [loading, setLoading]   = useState(true);
 
+  /* Booking create form */
+  const [bookingForm, setBookingForm] = useState({ name:'', phone:'', email:'', vehicle_make:'', vehicle_model:'', service_type:'', preferred_date:'', description:'' });
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [bookingSaving, setBookingSaving] = useState(false);
+
   /* WO create form */
   const [woForm, setWoForm] = useState({ title:'', vehicle:'', customer_name:'', service_type:'', priority:'medium', assigned_to:'', estimated_hours:'', due_date:'', notes:'' });
   const [showWoForm, setShowWoForm] = useState(false);
@@ -74,6 +80,41 @@ export default function AdminDashboard() {
   async function logout() {
     await fetch('/api/admin/logout', { method: 'POST' });
     router.push('/admin');
+  }
+
+  async function createBooking() {
+    const { name, phone, email, vehicle_make, vehicle_model, service_type, preferred_date } = bookingForm;
+    if (!name.trim() || !phone.trim() || !email.trim() || !vehicle_make.trim() || !vehicle_model.trim() || !service_type.trim() || !preferred_date) {
+      setBookingError('All fields except notes are required.');
+      return;
+    }
+    setBookingSaving(true);
+    setBookingError('');
+    try {
+      const res = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingForm),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        setBookingError(d.error ?? `Error ${res.status}`);
+        return;
+      }
+      setShowBookingForm(false);
+      setBookingForm({ name:'', phone:'', email:'', vehicle_make:'', vehicle_model:'', service_type:'', preferred_date:'', description:'' });
+      await load();
+    } catch {
+      setBookingError('Network error.');
+    } finally {
+      setBookingSaving(false);
+    }
+  }
+
+  async function deleteBooking(id: number) {
+    if (!confirm('Delete this booking? This cannot be undone.')) return;
+    await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
+    load();
   }
 
   async function createWO() {
@@ -180,19 +221,47 @@ export default function AdminDashboard() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2"><CalendarDays size={20} className="text-primary" /> Bookings <span className="text-gray-400 font-normal text-sm">({bookings.length})</span></h2>
+              <button onClick={() => setShowBookingForm(true)} className="flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-[13px] font-bold px-4 py-2 rounded-lg transition-colors">
+                <Plus size={15} /> New Booking
+              </button>
             </div>
+
+            {/* New Booking form */}
+            {showBookingForm && (
+              <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6 shadow-sm">
+                <h3 className="font-bold mb-4 text-[15px] text-gray-900">Add Booking</h3>
+                <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                  <input placeholder="Customer name *" className={fi()} value={bookingForm.name} onChange={e => setBookingForm(f=>({...f,name:e.target.value}))} />
+                  <input placeholder="Phone *" className={fi()} value={bookingForm.phone} onChange={e => setBookingForm(f=>({...f,phone:e.target.value}))} />
+                  <input placeholder="Email *" type="email" className={fi()} value={bookingForm.email} onChange={e => setBookingForm(f=>({...f,email:e.target.value}))} />
+                  <input placeholder="Preferred date *" type="date" className={fi()} value={bookingForm.preferred_date} onChange={e => setBookingForm(f=>({...f,preferred_date:e.target.value}))} />
+                  <input placeholder="Vehicle make (e.g. Toyota) *" className={fi()} value={bookingForm.vehicle_make} onChange={e => setBookingForm(f=>({...f,vehicle_make:e.target.value}))} />
+                  <input placeholder="Vehicle model (e.g. Corolla 2020) *" className={fi()} value={bookingForm.vehicle_model} onChange={e => setBookingForm(f=>({...f,vehicle_model:e.target.value}))} />
+                  <input placeholder="Service type *" className={fi()} value={bookingForm.service_type} onChange={e => setBookingForm(f=>({...f,service_type:e.target.value}))} />
+                </div>
+                <textarea placeholder="Notes (optional)" rows={2} className={fi() + ' w-full resize-none'} value={bookingForm.description} onChange={e => setBookingForm(f=>({...f,description:e.target.value}))} />
+                {bookingError && <p className="text-red-600 text-[13px] mt-2">{bookingError}</p>}
+                <div className="flex gap-2 mt-4">
+                  <button onClick={createBooking} disabled={bookingSaving} className="bg-primary hover:bg-primary-dark text-white font-bold text-sm px-5 py-2 rounded-lg disabled:opacity-50 transition-colors">
+                    {bookingSaving ? 'Saving…' : 'Add Booking'}
+                  </button>
+                  <button onClick={() => { setShowBookingForm(false); setBookingError(''); }} className="text-gray-500 hover:text-gray-700 text-sm px-4 py-2 border border-gray-200 rounded-lg transition-colors">Cancel</button>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
               <table className="w-full text-[13px]">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    {['Date','Customer','Vehicle','Service','Phone','Email'].map(h => (
+                    {['Date','Customer','Vehicle','Service','Phone','Email',''].map(h => (
                       <th key={h} className="text-left px-4 py-3 text-[11px] font-bold text-gray-400 uppercase tracking-wide">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {bookings.length === 0 && (
-                    <tr><td colSpan={6} className="text-center py-12 text-gray-400">No bookings yet.</td></tr>
+                    <tr><td colSpan={7} className="text-center py-12 text-gray-400">No bookings yet.</td></tr>
                   )}
                   {bookings.map(b => (
                     <tr key={b.id} className="border-b border-gray-100 hover:bg-gray-50">
@@ -202,6 +271,11 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate">{b.service_type}</td>
                       <td className="px-4 py-3 text-gray-600">{b.phone}</td>
                       <td className="px-4 py-3 text-gray-500">{b.email}</td>
+                      <td className="px-4 py-3">
+                        <button onClick={() => deleteBooking(b.id)} className="text-gray-300 hover:text-red-500 transition-colors" title="Delete booking">
+                          <Trash2 size={14} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
