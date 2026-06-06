@@ -10,7 +10,7 @@ interface WorkOrder {
   estimated_hours?: number; actual_hours?: number;
   due_date?: string; notes?: string; started_at?: string; completed_at?: string;
 }
-interface TechProfile { id: number; name: string; username: string; specialty?: string; active_count: number; }
+interface TechProfile { id: number; name: string; username: string; specialty?: string; active_work_orders: number; }
 
 const PRIORITY_COLOR: Record<string, string> = {
   low:    'bg-gray-100 text-gray-600',
@@ -94,9 +94,9 @@ export default function TechDashboard() {
       <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <div>
-            <span className="font-black text-[16px]">{tech.name}</span>
+            <span className="font-black text-[16px] text-gray-900">{tech.name}</span>
             {tech.specialty && <span className="text-gray-400 text-[13px] ml-2">· {tech.specialty}</span>}
-            {tech.active_count > 0 && <span className="ml-2 bg-amber-100 text-amber-700 text-[11px] font-bold px-2 py-0.5 rounded-full">{tech.active_count} active</span>}
+            {tech.active_work_orders > 0 && <span className="ml-2 bg-amber-100 text-amber-700 text-[11px] font-bold px-2 py-0.5 rounded-full">{tech.active_work_orders} active</span>}
           </div>
           <div className="flex items-center gap-3">
             <button onClick={load} className="p-1.5 text-gray-400 hover:text-gray-700 transition-colors"><RefreshCw size={15} /></button>
@@ -115,7 +115,7 @@ export default function TechDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Play size={16} className="text-amber-600" />
-                <h2 className="font-bold text-[15px]">Active <span className="text-gray-400 font-normal text-sm">({active.length})</span></h2>
+                <h2 className="font-bold text-[15px] text-gray-900">Active <span className="text-gray-400 font-normal text-sm">({active.length})</span></h2>
               </div>
               {active.length === 0 && <EmptyCol text="No active jobs" />}
               {active.map(wo => (
@@ -149,7 +149,7 @@ export default function TechDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Clock size={16} className="text-gray-500" />
-                <h2 className="font-bold text-[15px]">Queued <span className="text-gray-400 font-normal text-sm">({queued.length})</span></h2>
+                <h2 className="font-bold text-[15px] text-gray-900">Queued <span className="text-gray-400 font-normal text-sm">({queued.length})</span></h2>
               </div>
               {queued.length === 0 && <EmptyCol text="No queued jobs" />}
               {queued.map(wo => (
@@ -165,7 +165,7 @@ export default function TechDashboard() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <CheckCircle size={16} className="text-green-600" />
-                <h2 className="font-bold text-[15px]">Completed <span className="text-gray-400 font-normal text-sm">({completed.length})</span></h2>
+                <h2 className="font-bold text-[15px] text-gray-900">Completed <span className="text-gray-400 font-normal text-sm">({completed.length})</span></h2>
               </div>
               {completed.length === 0 && <EmptyCol text="No completed jobs" />}
               {completed.map(wo => (
@@ -195,7 +195,7 @@ function WOCard({ wo, accent, children }: { wo: WorkOrder; accent: string; child
   const border = accent === 'amber' ? 'border-l-amber-400' : accent === 'green' ? 'border-l-green-400' : 'border-l-gray-300';
   return (
     <div className={`bg-white border border-gray-200 border-l-4 ${border} rounded-xl p-4 mb-3 shadow-sm`}>
-      <div className="font-bold text-[14px] mb-0.5">{wo.title}</div>
+      <div className="font-bold text-[14px] text-gray-900 mb-0.5">{wo.title}</div>
       {(wo.customer_name || wo.vehicle) && (
         <div className="text-[12px] text-gray-400 mb-2">{[wo.customer_name, wo.vehicle].filter(Boolean).join(' · ')}</div>
       )}

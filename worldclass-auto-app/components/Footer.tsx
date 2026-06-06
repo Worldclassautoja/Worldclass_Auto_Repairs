@@ -73,7 +73,8 @@ export default function Footer() {
                 { href: '/#how',     label: 'How It Works'  },
                 { href: '/#reviews', label: 'Client Reviews' },
                 { href: '/booking',  label: 'Book Online'   },
-                { href: '/admin',    label: 'Admin Portal'  },
+                { href: '/admin',      label: 'Admin Portal'      },
+                { href: '/technician', label: 'Technician Portal' },
               ].map(({ href, label }) => (
                 <li key={href}>
                   <Link href={href} className="text-[13px] text-white/35 hover:text-white/75 transition-colors">
