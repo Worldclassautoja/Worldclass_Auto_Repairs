@@ -1,9 +1,11 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const ADMIN_EMAIL  = 'worldclassautorepairs1@gmail.com';
-const FROM_ADDRESS = process.env.EMAIL_FROM ?? 'WorldClass Auto <bookings@worldclassauto.com>';
+const FROM_ADDRESS = process.env.EMAIL_FROM ?? 'WorldClass Auto <onboarding@resend.dev>';
+
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 interface BookingDetails {
   reference:      string;
@@ -179,6 +181,7 @@ export async function sendBookingEmails(b: BookingDetails) {
     year: 'numeric', month: 'long', day: 'numeric',
   });
 
+  const resend = getResend();
   const [customerResult, adminResult] = await Promise.allSettled([
     resend.emails.send({
       from: FROM_ADDRESS,
