@@ -18,7 +18,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const fields: string[] = [];
   const values: unknown[] = [];
 
-  const allowed = ['status','priority','assigned_to','estimated_hours','due_date','notes','title','vehicle','customer_name','service_type'];
+  const allowed = ['status','priority','assigned_to','estimated_hours','due_date','notes','title','vehicle','customer_name','service_type','base_cost','labor_rate','total_cost','actual_hours'];
   for (const key of allowed) {
     if (key in b) { fields.push(key); values.push(b[key]); }
   }

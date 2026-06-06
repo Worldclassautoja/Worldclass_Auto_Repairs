@@ -62,9 +62,19 @@ export async function PATCH(req: NextRequest) {
 
   if (action === 'complete') {
     const hours = actual_hours != null ? Number(actual_hours) : null;
+    /* Fetch cost fields to compute total_cost */
+    const wo = await sql`SELECT estimated_hours, base_cost, labor_rate FROM work_orders WHERE id = ${id}`;
+    let totalCost: number | null = null;
+    if (wo[0] && hours != null) {
+      const est   = Number(wo[0].estimated_hours ?? 0);
+      const base  = Number(wo[0].base_cost ?? 0);
+      const rate  = Number(wo[0].labor_rate ?? 3500);
+      const extra = Math.max(0, hours - est);
+      totalCost   = base + extra * rate;
+    }
     const rows = await sql`
       UPDATE work_orders
-      SET status = 'completed', completed_at = NOW(), actual_hours = ${hours}
+      SET status = 'completed', completed_at = NOW(), actual_hours = ${hours}, total_cost = ${totalCost}
       WHERE id = ${id} AND status = 'active'
       RETURNING *
     `;
