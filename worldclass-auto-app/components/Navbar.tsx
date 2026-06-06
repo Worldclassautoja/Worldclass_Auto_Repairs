@@ -48,12 +48,14 @@ export default function Navbar({ transparent = false }: NavbarProps) {
       {/* ===== MAIN NAVBAR ===== */}
       <nav
         className={`fixed top-[36px] left-0 right-0 z-50 transition-all duration-300 ${
-          opaque ? 'bg-white shadow-sm border-b border-gray-100' : 'bg-transparent'
+          opaque
+            ? 'bg-[rgba(10,10,10,0.95)] backdrop-blur-xl border-b border-white/[0.07] shadow-2xl shadow-black/50'
+            : 'bg-transparent'
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center h-[70px]">
           {/* Logo */}
-          <Link href="/" className={`text-[18px] font-black tracking-tight ${opaque ? 'text-gray-900' : 'text-white'}`}>
+          <Link href="/" className="text-[18px] font-black tracking-tight text-white">
             WorldClass <span className="text-primary">Auto</span>
           </Link>
 
@@ -68,9 +70,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
               <Link
                 key={href}
                 href={href}
-                className={`text-sm font-medium relative group transition-colors duration-200 ${
-                  opaque ? 'text-gray-600 hover:text-primary' : 'text-white/85 hover:text-white'
-                }`}
+                className="text-[13px] font-medium text-white/60 hover:text-white relative group transition-colors duration-200"
               >
                 {label}
                 <span className="absolute left-0 -bottom-0.5 h-0.5 bg-primary w-0 group-hover:w-full transition-all duration-300" />
@@ -81,15 +81,15 @@ export default function Navbar({ transparent = false }: NavbarProps) {
           <div className="flex-1" />
 
           {/* Phone */}
-          <div className={`hidden md:flex items-center gap-1.5 text-sm font-semibold mr-4 ${opaque ? 'text-gray-500' : 'text-white/75'}`}>
-            <Phone size={13} />
+          <div className="hidden md:flex items-center gap-1.5 text-[13px] font-semibold text-white/50 mr-4">
+            <Phone size={13} className="text-primary" />
             (876) 462-9709
           </div>
 
           {/* Book CTA */}
           <Link
             href="/booking"
-            className="hidden md:inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-[13px] font-bold px-5 py-2 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-red-500/30"
+            className="hidden md:inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-black text-[13px] font-bold px-5 py-2.5 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/30"
           >
             <Calendar size={13} />
             Book Now
@@ -97,7 +97,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
 
           {/* Hamburger */}
           <button
-            className={`md:hidden p-1.5 ml-auto transition-colors ${opaque ? 'text-gray-800' : 'text-white'}`}
+            className="md:hidden p-1.5 ml-auto text-white transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
@@ -107,7 +107,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
+          <div className="md:hidden bg-[#0d0d0d] border-t border-white/[0.07]">
             {[
               { href: '/',          label: 'Home'     },
               { href: '/#services', label: 'Services' },
@@ -118,7 +118,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
                 key={href}
                 href={href}
                 onClick={() => setMenuOpen(false)}
-                className="block px-6 py-3.5 text-[15px] font-medium text-gray-700 border-b border-gray-100 hover:bg-gray-50"
+                className="block px-6 py-4 text-[15px] font-medium text-white/60 border-b border-white/[0.05] hover:text-white hover:bg-white/[0.03]"
               >
                 {label}
               </Link>
@@ -126,14 +126,14 @@ export default function Navbar({ transparent = false }: NavbarProps) {
             <Link
               href="/booking"
               onClick={() => setMenuOpen(false)}
-              className="block px-6 py-3.5 text-[15px] font-bold text-primary hover:bg-red-50 border-b border-gray-100"
+              className="block px-6 py-4 text-[15px] font-bold text-primary border-b border-white/[0.05] hover:bg-primary/5"
             >
               Book Appointment →
             </Link>
             <Link
               href="/admin"
               onClick={() => setMenuOpen(false)}
-              className="block px-6 py-3.5 text-[15px] font-medium text-gray-500 hover:bg-gray-50"
+              className="block px-6 py-4 text-[14px] font-medium text-white/30 hover:text-white/60"
             >
               Admin Portal
             </Link>
