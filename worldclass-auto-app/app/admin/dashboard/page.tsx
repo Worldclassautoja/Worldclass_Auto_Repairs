@@ -197,7 +197,7 @@ export default function AdminDashboard() {
                   {bookings.map(b => (
                     <tr key={b.id} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="px-4 py-3 font-semibold text-gray-700 whitespace-nowrap">{new Date(b.preferred_date).toLocaleDateString('en-JM', { weekday:'short', month:'short', day:'numeric' })}</td>
-                      <td className="px-4 py-3 font-medium">{b.name}</td>
+                      <td className="px-4 py-3 font-medium text-gray-800">{b.name}</td>
                       <td className="px-4 py-3 text-gray-600">{b.vehicle_make} {b.vehicle_model}</td>
                       <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate">{b.service_type}</td>
                       <td className="px-4 py-3 text-gray-600">{b.phone}</td>
