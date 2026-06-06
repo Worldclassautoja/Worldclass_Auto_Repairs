@@ -39,7 +39,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
           </div>
           <div className="flex items-center gap-4">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <a href="tel:8766720125" className="hover:text-white transition-colors">Contact</a>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
             <Link href="/admin" className="hover:text-white transition-colors">Admin</Link>
           </div>
         </div>
@@ -66,6 +66,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
               { href: '/#about',    label: 'About'       },
               { href: '/#how',      label: 'How It Works'},
               { href: '/#reviews',  label: 'Reviews'     },
+              { href: '/contact',   label: 'Contact'     },
             ].map(({ href, label }) => (
               <Link
                 key={href}
@@ -113,6 +114,7 @@ export default function Navbar({ transparent = false }: NavbarProps) {
               { href: '/#services', label: 'Services' },
               { href: '/#about',    label: 'About Us' },
               { href: '/#reviews',  label: 'Reviews'  },
+              { href: '/contact',   label: 'Contact'  },
             ].map(({ href, label }) => (
               <Link
                 key={href}
