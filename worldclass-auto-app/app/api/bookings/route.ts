@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
-import { sendBookingEmails } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,19 +47,11 @@ export async function POST(req: NextRequest) {
     const booking = rows[0];
     const reference = `WCA-${String(booking.id).padStart(5, '0')}`;
 
-    /* Send confirmation emails — non-blocking; don't fail the response if email fails */
+    /* Send confirmation emails — dynamic import keeps resend out of the build bundle */
     if (process.env.RESEND_API_KEY) {
-      sendBookingEmails({
-        reference,
-        name,
-        email,
-        phone: cleanPhone,
-        vehicle_make,
-        vehicle_model,
-        service_type,
-        preferred_date,
-        description,
-      }).catch((err) => console.error('Email send error:', err));
+      import('@/lib/email').then(({ sendBookingEmails }) =>
+        sendBookingEmails({ reference, name, email, phone: cleanPhone, vehicle_make, vehicle_model, service_type, preferred_date, description })
+      ).catch((err) => console.error('Email send error:', err));
     }
 
     return NextResponse.json({ ...booking, reference }, { status: 201, headers: CORS });
