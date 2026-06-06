@@ -17,17 +17,26 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      if (res.ok) {
+      const body = JSON.stringify({ username, password });
+      const headers = { 'Content-Type': 'application/json' };
+
+      // Try admin first
+      const adminRes = await fetch('/api/admin/login', { method: 'POST', headers, body });
+      if (adminRes.ok) {
         router.push('/admin/dashboard');
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error ?? 'Invalid credentials.');
+        return;
       }
+
+      // If admin credentials didn't match, try technician
+      const techRes = await fetch('/api/technician/login', { method: 'POST', headers, body });
+      if (techRes.ok) {
+        router.push('/technician/dashboard');
+        return;
+      }
+
+      // Both failed
+      const data = await techRes.json().catch(() => ({}));
+      setError(data.error ?? 'Invalid credentials.');
     } catch {
       setError('Network error. Please try again.');
     } finally {
@@ -51,14 +60,14 @@ export default function AdminLogin() {
             WorldClass <span className="text-primary">Auto</span>
           </div>
           <div className="inline-flex items-center gap-2 mt-2 border border-primary/25 bg-primary/8 text-primary text-[10px] font-bold tracking-[.12em] uppercase px-3 py-1.5 rounded-full">
-            Admin Portal
+            Staff Portal
           </div>
         </div>
 
         {/* Card */}
         <div className="bg-[#111] border border-white/[0.08] rounded-2xl p-8 shadow-2xl shadow-black/60">
           <h1 className="text-[20px] font-black text-white mb-1">Sign In</h1>
-          <p className="text-[13px] text-white/35 mb-7">Enter your credentials to access the portal.</p>
+          <p className="text-[13px] text-white/35 mb-7">Sign in with your admin or technician credentials.</p>
 
           {error && (
             <div className="bg-red-500/10 border border-red-500/25 text-red-400 text-[13px] px-4 py-3 rounded-xl mb-5">
@@ -75,7 +84,7 @@ export default function AdminLogin() {
                 onChange={e => setUsername(e.target.value)}
                 className="w-full px-4 py-3 bg-[#1a1a1a] border border-white/10 rounded-xl text-sm focus:outline-none focus:border-primary/50 focus:shadow-[0_0_0_3px_rgba(245,166,35,.08)] transition-all"
                 style={{ color: 'white' }}
-                placeholder="admin"
+                placeholder="username"
                 autoComplete="username"
                 required
               />
