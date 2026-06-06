@@ -179,7 +179,7 @@ export default function AdminDashboard() {
         {!loading && tab === 'bookings' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-[18px] font-bold flex items-center gap-2"><CalendarDays size={20} className="text-primary" /> Bookings <span className="text-gray-400 font-normal text-sm">({bookings.length})</span></h2>
+              <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2"><CalendarDays size={20} className="text-primary" /> Bookings <span className="text-gray-400 font-normal text-sm">({bookings.length})</span></h2>
             </div>
             <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
               <table className="w-full text-[13px]">
@@ -214,7 +214,7 @@ export default function AdminDashboard() {
         {!loading && tab === 'workorders' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-[18px] font-bold flex items-center gap-2"><ClipboardList size={20} className="text-primary" /> Work Orders <span className="text-gray-400 font-normal text-sm">({workOrders.length})</span></h2>
+              <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2"><ClipboardList size={20} className="text-primary" /> Work Orders <span className="text-gray-400 font-normal text-sm">({workOrders.length})</span></h2>
               <button onClick={() => setShowWoForm(true)} className="flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-[13px] font-bold px-4 py-2 rounded-lg transition-colors">
                 <Plus size={15} /> New Work Order
               </button>
@@ -290,7 +290,7 @@ export default function AdminDashboard() {
         {!loading && tab === 'techs' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-[18px] font-bold flex items-center gap-2"><Users size={20} className="text-primary" /> Technicians <span className="text-gray-400 font-normal text-sm">({techs.length})</span></h2>
+              <h2 className="text-[18px] font-bold text-gray-900 flex items-center gap-2"><Users size={20} className="text-primary" /> Technicians <span className="text-gray-400 font-normal text-sm">({techs.length})</span></h2>
               <button onClick={() => setShowTechForm(true)} className="flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-[13px] font-bold px-4 py-2 rounded-lg transition-colors">
                 <Plus size={15} /> Add Technician
               </button>
