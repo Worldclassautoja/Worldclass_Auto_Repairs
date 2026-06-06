@@ -364,7 +364,7 @@ document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
   var _h = window.location.hostname;
   var API_BASE = (_h === '' || _h === 'localhost' || _h === '127.0.0.1')
     ? 'http://localhost:3000'
-    : '';  /* same origin when static site is served alongside Next.js */
+    : 'https://worldclass-auto-repairs-pl41904fj-kevon-s-projects1.vercel.app';
 
   /* ---- Form submit ---- */
   form.addEventListener('submit', function (e) {
