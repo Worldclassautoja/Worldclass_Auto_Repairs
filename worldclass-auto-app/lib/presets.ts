@@ -95,5 +95,5 @@ export function getPresetById(id: string): ServicePreset | undefined {
 }
 
 export function formatCost(amount: number): string {
-  return `$${amount.toLocaleString('en-JM')}`;
+  return `$${Math.round(amount).toLocaleString()}`;
 }
