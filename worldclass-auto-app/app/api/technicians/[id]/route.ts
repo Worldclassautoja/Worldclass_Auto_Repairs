@@ -29,7 +29,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
   const setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
   values.push(id);
-  const rows = await sql(`UPDATE technicians SET ${setClause} WHERE id = $${values.length} RETURNING id, name, username, specialty`, values);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rows = await (sql as any)(`UPDATE technicians SET ${setClause} WHERE id = $${values.length} RETURNING id, name, username, specialty`, values);
   return NextResponse.json(rows[0]);
 }
 

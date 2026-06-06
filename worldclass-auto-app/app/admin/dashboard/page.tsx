@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   CalendarDays, ClipboardList, Users, LogOut,
-  Plus, Trash2, Edit3, CheckCircle, Clock, AlertCircle,
-  BarChart2, RefreshCw,
+  Plus, Trash2, RefreshCw,
 } from 'lucide-react';
 
 /* ─── Types ─────────────────────────────────────────────── */

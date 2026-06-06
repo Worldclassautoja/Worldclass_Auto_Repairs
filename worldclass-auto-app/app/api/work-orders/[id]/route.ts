@@ -27,7 +27,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   /* Build dynamic SET using template tag per field */
   const setClause = fields.map((f, i) => `${f} = $${i + 1}`).join(', ');
   values.push(id);
-  const rows = await sql(`UPDATE work_orders SET ${setClause} WHERE id = $${values.length} RETURNING *`, values);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rows = await (sql as any)(`UPDATE work_orders SET ${setClause} WHERE id = $${values.length} RETURNING *`, values);
   return NextResponse.json(rows[0]);
 }
 
