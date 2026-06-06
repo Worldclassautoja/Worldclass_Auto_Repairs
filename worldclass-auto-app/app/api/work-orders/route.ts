@@ -35,9 +35,9 @@ export async function POST(req: NextRequest) {
         ${b.customer_name ?? null},
         ${b.service_type ?? null},
         ${b.priority ?? 'medium'},
-        ${b.assigned_to ?? null},
-        ${b.estimated_hours ?? null},
-        ${b.due_date ?? null},
+        ${b.assigned_to || null},
+        ${b.estimated_hours || null},
+        ${b.due_date || null},
         ${b.notes ?? null}
       )
       RETURNING *
