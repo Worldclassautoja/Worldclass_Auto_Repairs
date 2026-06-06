@@ -263,7 +263,7 @@ export default function AdminDashboard() {
                 <div key={wo.id} className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div>
-                      <div className="font-bold text-[14px] mb-0.5">{wo.title}</div>
+                      <div className="font-bold text-[14px] text-gray-800 mb-0.5">{wo.title}</div>
                       {wo.customer_name && <div className="text-[12px] text-gray-400">{wo.customer_name}{wo.vehicle ? ` · ${wo.vehicle}` : ''}</div>}
                     </div>
                     <button onClick={() => deleteWO(wo.id)} className="text-gray-300 hover:text-red-500 transition-colors flex-shrink-0 mt-0.5"><Trash2 size={14} /></button>
