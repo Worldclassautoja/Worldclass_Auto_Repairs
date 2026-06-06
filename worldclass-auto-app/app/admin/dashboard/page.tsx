@@ -328,7 +328,7 @@ export default function AdminDashboard() {
                   {techs.length === 0 && <tr><td colSpan={5} className="text-center py-12 text-gray-400">No technicians.</td></tr>}
                   {techs.map(t => (
                     <tr key={t.id} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="px-4 py-3 font-semibold">{t.name}</td>
+                      <td className="px-4 py-3 font-semibold text-gray-800">{t.name}</td>
                       <td className="px-4 py-3 text-gray-500 font-mono text-[12px]">{t.username}</td>
                       <td className="px-4 py-3 text-gray-600">{t.specialty ?? '—'}</td>
                       <td className="px-4 py-3">
