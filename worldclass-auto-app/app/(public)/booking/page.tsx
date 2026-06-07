@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Calendar, Phone, Mail, MapPin, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
+import { Calendar, Phone, Mail, MapPin, ChevronLeft, ChevronRight, MessageCircle, Check } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { PRESET_CATEGORIES } from '@/lib/presets';
 
 const MODELS: Record<string, string[]> = {
   Toyota:     ['Aqua','Allion','Axio','Camry','CHR','Corolla','Fielder','Harrier','Hilux','Land Cruiser','Mark X','Prado','Premio','RAV4','Vitz','Wish','Yaris'],
@@ -16,13 +17,6 @@ const MODELS: Record<string, string[]> = {
   Suzuki:     ['Alto','Baleno','Cultus','Ignis','Jimny','Swift','SX4','Vitara'],
   Ford:       ['Bronco','EcoSport','Edge','Explorer','F-150','Focus','Ranger'],
 };
-
-const SERVICES = [
-  'General Repairs & Maintenance','Engine Diagnostics & Repair','Brake System Service',
-  'Transmission Service','Suspension & Steering','Electrical System Repair',
-  'Tyre Services & Wheel Alignment','Battery Testing & Replacement','Oil & Fluid Services',
-  'Exhaust System Repair','Pre-Purchase Vehicle Inspection','AC System Service',
-];
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -39,8 +33,11 @@ function formatDate(d: Date) {
 export default function BookingPage() {
   const [form, setForm] = useState({
     name: '', email: '', areaCode: '+876', phone: '',
-    make: '', model: '', modelOther: '', service: '', description: '',
+    make: '', model: '', modelOther: '', description: '',
   });
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [otherChecked, setOtherChecked]         = useState(false);
+  const [otherText, setOtherText]               = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [calOpen, setCalOpen]   = useState(false);
   const [viewYear, setViewYear] = useState(new Date().getFullYear());
@@ -79,6 +76,13 @@ export default function BookingPage() {
     setErrors(e => ({ ...e, date: '' }));
   }
 
+  function toggleService(svc: string) {
+    setSelectedServices(prev =>
+      prev.includes(svc) ? prev.filter(s => s !== svc) : [...prev, svc]
+    );
+    setErrors(e => ({ ...e, service: '' }));
+  }
+
   function validate() {
     const e: Record<string, string> = {};
     if (!form.name.trim() || form.name.trim().length < 2) e.name = 'Please enter your full name.';
@@ -86,7 +90,9 @@ export default function BookingPage() {
     if (form.phone.replace(/\D/g,'').length < 7) e.phone = 'Please enter a valid phone number.';
     if (!form.make) e.make = 'Please select your vehicle make.';
     if (form.make === 'Other' ? !form.modelOther.trim() : !form.model) e.model = 'Please select your vehicle model.';
-    if (!form.service) e.service = 'Please select a service type.';
+    const allServices = [...selectedServices, ...(otherChecked && otherText.trim() ? [`Other: ${otherText.trim()}`] : [])];
+    if (allServices.length === 0) e.service = 'Please select at least one service.';
+    if (otherChecked && !otherText.trim()) e.otherText = 'Please describe what you need.';
     if (!selectedDate) e.date = 'Please select a preferred date.';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -97,13 +103,15 @@ export default function BookingPage() {
     if (!validate()) return;
     setSubmitting(true);
 
+    const allServices = [...selectedServices, ...(otherChecked && otherText.trim() ? [`Other: ${otherText.trim()}`] : [])];
+
     const body = {
       name: form.name.trim(),
       phone: (form.areaCode + form.phone).replace(/\D/g,''),
       email: form.email.trim(),
       vehicle_make: form.make,
       vehicle_model: form.make === 'Other' ? form.modelOther.trim() : form.model,
-      service_type: form.service,
+      service_type: allServices.join(' · '),
       preferred_date: selectedDate!.toISOString().split('T')[0],
       description: form.description.trim() || null,
     };
@@ -248,18 +256,72 @@ export default function BookingPage() {
                   </DField>
                 </div>
 
-                {/* Service */}
-                <DField label="Service Type" required error={errors.service}>
-                  <div className="relative">
-                    <select className={di(errors.service) + ' cursor-pointer pr-8'}
-                      value={form.service}
-                      onChange={e => setForm(f => ({...f, service: e.target.value}))}>
-                      <option value="">Select a service...</option>
-                      {SERVICES.map(s => <option key={s}>{s}</option>)}
-                    </select>
-                    <ChevronRight size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none rotate-90" />
+                {/* Services — multi-select checkboxes */}
+                <div className="mb-5">
+                  <label className="block text-[12px] font-bold text-white/50 uppercase tracking-[.08em] mb-3">
+                    Services Required <span className="text-primary">*</span>
+                    <span className="text-white/25 font-normal normal-case tracking-normal ml-1">(select all that apply)</span>
+                  </label>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {PRESET_CATEGORIES.map(svc => {
+                      const checked = selectedServices.includes(svc);
+                      return (
+                        <button
+                          key={svc}
+                          type="button"
+                          onClick={() => toggleService(svc)}
+                          className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium text-left transition-all ${
+                            checked
+                              ? 'border-primary/50 bg-primary/8 text-white'
+                              : 'border-white/10 bg-[#1a1a1a] text-white/55 hover:border-white/25 hover:text-white/80'
+                          }`}
+                        >
+                          <span className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
+                            checked ? 'bg-primary border-primary' : 'border-white/20'
+                          }`}>
+                            {checked && <Check size={10} strokeWidth={3} className="text-black" />}
+                          </span>
+                          {svc}
+                        </button>
+                      );
+                    })}
+                    {/* Other option */}
+                    <button
+                      type="button"
+                      onClick={() => { setOtherChecked(v => !v); setErrors(e => ({ ...e, service: '' })); }}
+                      className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium text-left transition-all ${
+                        otherChecked
+                          ? 'border-primary/50 bg-primary/8 text-white'
+                          : 'border-white/10 bg-[#1a1a1a] text-white/55 hover:border-white/25 hover:text-white/80'
+                      }`}
+                    >
+                      <span className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
+                        otherChecked ? 'bg-primary border-primary' : 'border-white/20'
+                      }`}>
+                        {otherChecked && <Check size={10} strokeWidth={3} className="text-black" />}
+                      </span>
+                      Other
+                    </button>
                   </div>
-                </DField>
+                  {otherChecked && (
+                    <div className="mt-2">
+                      <input
+                        className={di(errors.otherText) + ' mt-1'}
+                        type="text"
+                        placeholder="Describe what you need..."
+                        value={otherText}
+                        onChange={e => { setOtherText(e.target.value); setErrors(er => ({ ...er, otherText: '' })); }}
+                      />
+                      {errors.otherText && <p className="text-[12px] text-red-400 mt-1.5">{errors.otherText}</p>}
+                    </div>
+                  )}
+                  {errors.service && <p className="text-[12px] text-red-400 mt-2">{errors.service}</p>}
+                  {(selectedServices.length > 0 || (otherChecked && otherText.trim())) && (
+                    <div className="mt-2 text-[12px] text-white/35">
+                      {selectedServices.length + (otherChecked && otherText.trim() ? 1 : 0)} service{selectedServices.length + (otherChecked && otherText.trim() ? 1 : 0) !== 1 ? 's' : ''} selected
+                    </div>
+                  )}
+                </div>
 
                 {/* Date picker */}
                 <DField label="Preferred Date" required error={errors.date}>

@@ -22,9 +22,21 @@ export async function GET(req: NextRequest) {
   }
   const sql = getDb();
   const rows = await sql`
-    SELECT b.*, t.name AS tech_name
+    SELECT b.*, t.name AS tech_name,
+      COALESCE(wa.wo_count, 0)    AS wo_count,
+      wa.total_est_hours,
+      wa.total_cost
     FROM bookings b
     LEFT JOIN technicians t ON t.id = b.assigned_to
+    LEFT JOIN (
+      SELECT booking_id,
+             COUNT(*)               AS wo_count,
+             SUM(estimated_hours)   AS total_est_hours,
+             SUM(total_cost)        AS total_cost
+      FROM work_orders
+      WHERE booking_id IS NOT NULL
+      GROUP BY booking_id
+    ) wa ON wa.booking_id = b.id
     ORDER BY b.created_at DESC
   `;
   return NextResponse.json(rows, { headers: CORS });

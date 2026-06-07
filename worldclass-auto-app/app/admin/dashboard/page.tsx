@@ -4,13 +4,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   CalendarDays, ClipboardList, Users, LogOut,
-  Plus, Trash2, RefreshCw, ChevronDown,
+  Plus, Trash2, RefreshCw, ChevronDown, BarChart3, ChevronUp,
 } from 'lucide-react';
 import { SERVICE_PRESETS, PRESET_CATEGORIES, formatCost } from '@/lib/presets';
 
 /* ─── Types ─────────────────────────────────────────────── */
-interface Booking { id: number; name: string; phone: string; email: string; vehicle_make: string; vehicle_model: string; service_type: string; preferred_date: string; description?: string; created_at: string; assigned_to?: number; tech_name?: string; status: string; }
-interface WorkOrder { id: number; title: string; vehicle?: string; customer_name?: string; service_type?: string; status: string; priority: string; assigned_to?: number; tech_name?: string; estimated_hours?: number; actual_hours?: number; base_cost?: number; labor_rate?: number; total_cost?: number; due_date?: string; notes?: string; started_at?: string; completed_at?: string; created_at: string; }
+interface Booking { id: number; name: string; phone: string; email: string; vehicle_make: string; vehicle_model: string; service_type: string; preferred_date: string; description?: string; created_at: string; assigned_to?: number; tech_name?: string; status: string; wo_count: number; total_est_hours?: number; total_cost?: number; }
+interface WorkOrder { id: number; title: string; vehicle?: string; customer_name?: string; service_type?: string; status: string; priority: string; assigned_to?: number; tech_name?: string; estimated_hours?: number; actual_hours?: number; base_cost?: number; labor_rate?: number; total_cost?: number; due_date?: string; notes?: string; started_at?: string; completed_at?: string; created_at: string; booking_id?: number; }
 interface Technician { id: number; username: string; name: string; specialty?: string; is_active: boolean; active_wos: number; total_wos: number; }
 
 const STATUS_COLOR: Record<string, string> = {
@@ -27,7 +27,7 @@ const PRIORITY_COLOR: Record<string, string> = {
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [tab, setTab]           = useState<'bookings' | 'workorders' | 'techs'>('bookings');
+  const [tab, setTab]           = useState<'bookings' | 'workorders' | 'techs' | 'timecard'>('bookings');
   const [admin, setAdmin]       = useState<string | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [workOrders, setWOs]    = useState<WorkOrder[]>([]);
@@ -41,11 +41,16 @@ export default function AdminDashboard() {
   const [bookingSaving, setBookingSaving] = useState(false);
 
   /* WO create form */
-  const [woForm, setWoForm] = useState({ title:'', vehicle:'', customer_name:'', service_type:'', priority:'medium', assigned_to:'', estimated_hours:'', due_date:'', notes:'', base_cost:'', labor_rate:'3500' });
+  const [woForm, setWoForm] = useState({ title:'', vehicle:'', customer_name:'', service_type:'', priority:'medium', assigned_to:'', estimated_hours:'', due_date:'', notes:'', base_cost:'', labor_rate:'3500', booking_id:'' });
   const [showWoForm, setShowWoForm] = useState(false);
   const [woError, setWoError] = useState('');
   const [woSaving, setWoSaving] = useState(false);
   const [selectedPreset, setSelectedPreset] = useState('');
+
+  /* Completed WOs visibility + time card filter */
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [tcFrom, setTcFrom] = useState('');
+  const [tcTo,   setTcTo]   = useState('');
 
   /* Tech form */
   const [techForm, setTechForm] = useState({ username:'', name:'', password:'', specialty:'' });
@@ -141,6 +146,7 @@ export default function AdminDashboard() {
       notes: b.description ?? '',
       base_cost: '',
       labor_rate: '3500',
+      booking_id: String(b.id),
     });
     setSelectedPreset('');
     setShowWoForm(true);
@@ -172,10 +178,11 @@ export default function AdminDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...woForm,
-          assigned_to: woForm.assigned_to ? Number(woForm.assigned_to) : null,
+          assigned_to:     woForm.assigned_to     ? Number(woForm.assigned_to)     : null,
           estimated_hours: woForm.estimated_hours ? Number(woForm.estimated_hours) : null,
-          base_cost: woForm.base_cost ? Number(woForm.base_cost) : null,
-          labor_rate: woForm.labor_rate ? Number(woForm.labor_rate) : 3500,
+          base_cost:       woForm.base_cost       ? Number(woForm.base_cost)       : null,
+          labor_rate:      woForm.labor_rate      ? Number(woForm.labor_rate)      : 3500,
+          booking_id:      woForm.booking_id      ? Number(woForm.booking_id)      : null,
         }),
       });
       if (!res.ok) {
@@ -185,7 +192,7 @@ export default function AdminDashboard() {
       }
       setShowWoForm(false);
       setSelectedPreset('');
-      setWoForm({ title:'', vehicle:'', customer_name:'', service_type:'', priority:'medium', assigned_to:'', estimated_hours:'', due_date:'', notes:'', base_cost:'', labor_rate:'3500' });
+      setWoForm({ title:'', vehicle:'', customer_name:'', service_type:'', priority:'medium', assigned_to:'', estimated_hours:'', due_date:'', notes:'', base_cost:'', labor_rate:'3500', booking_id:'' });
       await load();
     } catch {
       setWoError('Network error — check the server is running.');
@@ -239,6 +246,37 @@ export default function AdminDashboard() {
     load();
   }
 
+  /* ── Derived lists ── */
+  const activeWOs    = workOrders.filter(w => w.status !== 'completed');
+  const completedWOs = workOrders.filter(w => w.status === 'completed');
+
+  /* ── Admin time card ── */
+  const tcCompletedWOs = completedWOs.filter(w => {
+    if (!w.completed_at) return true;
+    const d = new Date(w.completed_at);
+    if (tcFrom && d < new Date(tcFrom + 'T00:00:00')) return false;
+    if (tcTo   && d > new Date(tcTo   + 'T23:59:59')) return false;
+    return true;
+  });
+  const tcByTech = tcCompletedWOs.reduce<Record<string, { count: number; hours: number; revenue: number }>>((acc, w) => {
+    const key = w.tech_name ?? 'Unassigned';
+    if (!acc[key]) acc[key] = { count: 0, hours: 0, revenue: 0 };
+    acc[key].count++;
+    acc[key].hours   += Number(w.actual_hours ?? 0);
+    acc[key].revenue += Number(w.total_cost   ?? 0);
+    return acc;
+  }, {});
+  const tcByCat = tcCompletedWOs.reduce<Record<string, { count: number; hours: number; revenue: number }>>((acc, w) => {
+    const key = w.service_type ?? 'Uncategorised';
+    if (!acc[key]) acc[key] = { count: 0, hours: 0, revenue: 0 };
+    acc[key].count++;
+    acc[key].hours   += Number(w.actual_hours ?? 0);
+    acc[key].revenue += Number(w.total_cost   ?? 0);
+    return acc;
+  }, {});
+  const tcTotalHours   = tcCompletedWOs.reduce((s, w) => s + Number(w.actual_hours ?? 0), 0);
+  const tcTotalRevenue = tcCompletedWOs.reduce((s, w) => s + Number(w.total_cost   ?? 0), 0);
+
   if (!admin) return <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]"><div className="animate-spin border-4 border-primary border-t-transparent rounded-full w-8 h-8" /></div>;
 
   return (
@@ -249,10 +287,10 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-6">
             <div className="text-[16px] font-black text-white">WorldClass <span className="text-primary">Auto</span> <span className="text-white/35 font-normal text-sm">Admin</span></div>
             <div className="flex gap-1">
-              {(['bookings','workorders','techs'] as const).map(t => (
+              {(['bookings','workorders','techs','timecard'] as const).map(t => (
                 <button key={t} onClick={() => setTab(t)}
                   className={`px-4 py-1.5 rounded-lg text-[13px] font-semibold transition-colors ${tab === t ? 'bg-primary/10 text-primary' : 'text-white/45 hover:text-white/80'}`}>
-                  {t === 'bookings' ? 'Bookings' : t === 'workorders' ? 'Work Orders' : 'Technicians'}
+                  {t === 'bookings' ? 'Bookings' : t === 'workorders' ? 'Work Orders' : t === 'techs' ? 'Technicians' : 'Time Card'}
                 </button>
               ))}
             </div>
@@ -340,7 +378,7 @@ export default function AdminDashboard() {
                         </select>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 mb-1.5">
                           <button
                             onClick={() => convertToWO(b)}
                             className="text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors whitespace-nowrap"
@@ -352,6 +390,13 @@ export default function AdminDashboard() {
                             <Trash2 size={14} />
                           </button>
                         </div>
+                        {Number(b.wo_count) > 0 && (
+                          <div className="text-[11px] text-white/40">
+                            {b.wo_count} WO{Number(b.wo_count) !== 1 ? 's' : ''}
+                            {b.total_est_hours != null && ` · ${Number(b.total_est_hours).toFixed(1)}h`}
+                            {b.total_cost != null && <span className="text-green-400 font-semibold"> · {formatCost(b.total_cost)}</span>}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -445,40 +490,134 @@ export default function AdminDashboard() {
               </div>
             )}
 
+            {/* ── Active / Pending queue ── */}
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {workOrders.length === 0 && <div className="col-span-3 text-center py-16 text-white/35 bg-[#111] border border-white/[0.07] rounded-xl">No work orders yet.</div>}
-              {workOrders.map(wo => (
-                <div key={wo.id} className="bg-[#111] border border-white/[0.08] rounded-xl p-5">
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div>
-                      <div className="font-bold text-[14px] text-white/90 mb-0.5">{wo.title}</div>
-                      {wo.customer_name && <div className="text-[12px] text-white/35">{wo.customer_name}{wo.vehicle ? ` · ${wo.vehicle}` : ''}</div>}
-                    </div>
-                    <button onClick={() => deleteWO(wo.id)} className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 mt-0.5"><Trash2 size={14} /></button>
+              {activeWOs.length === 0 && completedWOs.length === 0 && <div className="col-span-3 text-center py-16 text-white/35 bg-[#111] border border-white/[0.07] rounded-xl">No work orders yet.</div>}
+              {activeWOs.length === 0 && completedWOs.length > 0  && <div className="col-span-3 text-center py-10 text-white/35 bg-[#111] border border-white/[0.07] rounded-xl text-[13px]">All work orders are completed — see below.</div>}
+              {activeWOs.map(wo => (
+                <WOCard key={wo.id} wo={wo} onDelete={deleteWO} onStatus={updateWOStatus} />
+              ))}
+            </div>
+
+            {/* ── Completed section (collapsible) ── */}
+            {completedWOs.length > 0 && (
+              <div className="mt-8">
+                <button
+                  onClick={() => setShowCompleted(v => !v)}
+                  className="flex items-center gap-2 text-[13px] font-semibold text-white/50 hover:text-white/75 transition-colors mb-4"
+                >
+                  {showCompleted ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                  Completed Work Orders
+                  <span className="bg-green-500/10 text-green-400 text-[11px] font-bold px-2 py-0.5 rounded-full ml-1">{completedWOs.length}</span>
+                </button>
+                {showCompleted && (
+                  <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {completedWOs.map(wo => (
+                      <WOCard key={wo.id} wo={wo} onDelete={deleteWO} onStatus={updateWOStatus} dimmed />
+                    ))}
                   </div>
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${STATUS_COLOR[wo.status] ?? 'bg-white/[0.06] text-white/60'}`}>{wo.status}</span>
-                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${PRIORITY_COLOR[wo.priority] ?? 'bg-white/[0.06] text-white/60'}`}>{wo.priority}</span>
-                  </div>
-                  {wo.tech_name && <div className="text-[12px] text-white/50 mb-1">👤 {wo.tech_name}</div>}
-                  {wo.estimated_hours && <div className="text-[12px] text-white/50 mb-1">⏱ {wo.estimated_hours}h est{wo.actual_hours ? ` · ${wo.actual_hours}h actual` : ''}</div>}
-                  {wo.base_cost != null && (
-                    <div className="text-[12px] text-white/50 mb-1">
-                      💰 Base {formatCost(wo.base_cost)}
-                      {wo.total_cost != null && (
-                        <span className="font-semibold text-green-400"> · Total {formatCost(wo.total_cost)}</span>
-                      )}
-                    </div>
-                  )}
-                  {wo.due_date && <div className="text-[12px] text-white/50 mb-3">📅 Due {new Date(wo.due_date).toLocaleDateString()}</div>}
-                  <div className="flex gap-1.5 mt-3 pt-3 border-t border-white/[0.05]">
-                    {wo.status !== 'active'    && <button onClick={() => updateWOStatus(wo.id,'active')}    className="text-[11px] px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-md font-medium hover:bg-amber-500/15 transition-colors">→ Active</button>}
-                    {wo.status !== 'completed' && <button onClick={() => updateWOStatus(wo.id,'completed')} className="text-[11px] px-2.5 py-1 bg-green-500/10 text-green-400 rounded-md font-medium hover:bg-green-500/15 transition-colors">✓ Done</button>}
-                    {wo.status !== 'pending'   && <button onClick={() => updateWOStatus(wo.id,'pending')}   className="text-[11px] px-2.5 py-1 bg-white/[0.06] text-white/60 rounded-md font-medium hover:bg-white/[0.10] transition-colors">↩ Pending</button>}
-                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========== TIME CARD TAB ========== */}
+        {!loading && tab === 'timecard' && (
+          <div>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <h2 className="text-[18px] font-bold text-white flex items-center gap-2">
+                <BarChart3 size={20} className="text-primary" /> Shop Time Card Overview
+              </h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[12px] text-white/40 font-semibold">Filter:</span>
+                <input type="date" value={tcFrom} onChange={e => setTcFrom(e.target.value)}
+                  className="px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all" />
+                <span className="text-[12px] text-white/30">to</span>
+                <input type="date" value={tcTo} onChange={e => setTcTo(e.target.value)}
+                  className="px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all" />
+                {(tcFrom || tcTo) && (
+                  <button onClick={() => { setTcFrom(''); setTcTo(''); }} className="text-[12px] text-white/40 hover:text-white/70 px-2 py-1.5 border border-white/10 rounded-lg transition-colors">Clear</button>
+                )}
+              </div>
+            </div>
+
+            {/* Summary stats */}
+            <div className="grid sm:grid-cols-4 gap-4 mb-8">
+              {[
+                { label: 'Completed Jobs',       value: String(tcCompletedWOs.length),           color: 'text-white'      },
+                { label: 'Total Hours Logged',   value: `${tcTotalHours.toFixed(1)}h`,           color: 'text-amber-400'  },
+                { label: 'Total Revenue',        value: formatCost(tcTotalRevenue),              color: 'text-green-400'  },
+                { label: 'Active Technicians',   value: String(Object.keys(tcByTech).length),    color: 'text-blue-400'   },
+              ].map(s => (
+                <div key={s.label} className="bg-[#111] border border-white/[0.07] rounded-xl p-5">
+                  <div className={`text-[28px] font-black leading-none mb-1 ${s.color}`}>{s.value}</div>
+                  <div className="text-[12px] text-white/40 font-medium">{s.label}</div>
                 </div>
               ))}
             </div>
+
+            {tcCompletedWOs.length === 0 ? (
+              <div className="bg-[#111] border border-white/[0.07] rounded-xl p-12 text-center text-white/35 text-[14px]">No completed work orders in this period.</div>
+            ) : (
+              <>
+                {/* Per-technician breakdown */}
+                <div className="bg-[#111] border border-white/[0.07] rounded-xl overflow-hidden mb-6">
+                  <div className="px-5 py-3.5 bg-white/[0.03] border-b border-white/[0.06]">
+                    <div className="text-[12px] font-bold text-white/40 uppercase tracking-wide">By Technician</div>
+                  </div>
+                  <table className="w-full text-[13px]">
+                    <thead className="border-b border-white/[0.05]">
+                      <tr>{['Technician','Jobs','Hours Logged','Revenue'].map(h => (
+                        <th key={h} className="text-left px-5 py-3 text-[11px] font-bold text-white/35 uppercase tracking-wide">{h}</th>
+                      ))}</tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(tcByTech).sort((a,b) => b[1].hours - a[1].hours).map(([name, s]) => (
+                        <tr key={name} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                          <td className="px-5 py-3.5 font-semibold text-white/90">{name}</td>
+                          <td className="px-5 py-3.5 text-white/60">{s.count}</td>
+                          <td className="px-5 py-3.5 text-white/60">{s.hours.toFixed(1)}h</td>
+                          <td className="px-5 py-3.5 font-semibold text-green-400">{s.revenue > 0 ? formatCost(s.revenue) : '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot className="bg-white/[0.03] border-t border-white/[0.06]">
+                      <tr>
+                        <td className="px-5 py-3 font-black text-white/60 text-[11px] uppercase tracking-wide">Total</td>
+                        <td className="px-5 py-3 font-bold text-white">{tcCompletedWOs.length}</td>
+                        <td className="px-5 py-3 font-bold text-white">{tcTotalHours.toFixed(1)}h</td>
+                        <td className="px-5 py-3 font-bold text-green-400">{formatCost(tcTotalRevenue)}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+
+                {/* Per-category breakdown */}
+                <div className="bg-[#111] border border-white/[0.07] rounded-xl overflow-hidden">
+                  <div className="px-5 py-3.5 bg-white/[0.03] border-b border-white/[0.06]">
+                    <div className="text-[12px] font-bold text-white/40 uppercase tracking-wide">By Service Category</div>
+                  </div>
+                  <table className="w-full text-[13px]">
+                    <thead className="border-b border-white/[0.05]">
+                      <tr>{['Category','Jobs','Hours','Revenue'].map(h => (
+                        <th key={h} className="text-left px-5 py-3 text-[11px] font-bold text-white/35 uppercase tracking-wide">{h}</th>
+                      ))}</tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(tcByCat).sort((a,b) => b[1].hours - a[1].hours).map(([cat, s]) => (
+                        <tr key={cat} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                          <td className="px-5 py-3.5 font-semibold text-white/90">{cat}</td>
+                          <td className="px-5 py-3.5 text-white/60">{s.count}</td>
+                          <td className="px-5 py-3.5 text-white/60">{s.hours.toFixed(1)}h</td>
+                          <td className="px-5 py-3.5 font-semibold text-amber-400">{s.revenue > 0 ? formatCost(s.revenue) : '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -545,6 +684,43 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function WOCard({ wo, onDelete, onStatus, dimmed }: {
+  wo: WorkOrder;
+  onDelete: (id: number) => void;
+  onStatus: (id: number, status: string) => void;
+  dimmed?: boolean;
+}) {
+  return (
+    <div className={`bg-[#111] border border-white/[0.08] rounded-xl p-5 ${dimmed ? 'opacity-60' : ''}`}>
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <div>
+          <div className="font-bold text-[14px] text-white/90 mb-0.5">{wo.title}</div>
+          {wo.customer_name && <div className="text-[12px] text-white/35">{wo.customer_name}{wo.vehicle ? ` · ${wo.vehicle}` : ''}</div>}
+        </div>
+        <button onClick={() => onDelete(wo.id)} className="text-white/20 hover:text-red-400 transition-colors flex-shrink-0 mt-0.5"><Trash2 size={14} /></button>
+      </div>
+      <div className="flex flex-wrap gap-1.5 mb-3">
+        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${STATUS_COLOR[wo.status] ?? 'bg-white/[0.06] text-white/60'}`}>{wo.status}</span>
+        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${PRIORITY_COLOR[wo.priority] ?? 'bg-white/[0.06] text-white/60'}`}>{wo.priority}</span>
+      </div>
+      {wo.tech_name && <div className="text-[12px] text-white/50 mb-1">👤 {wo.tech_name}</div>}
+      {wo.estimated_hours && <div className="text-[12px] text-white/50 mb-1">⏱ {wo.estimated_hours}h est{wo.actual_hours ? ` · ${wo.actual_hours}h actual` : ''}</div>}
+      {wo.base_cost != null && (
+        <div className="text-[12px] text-white/50 mb-1">
+          💰 Base {formatCost(wo.base_cost)}
+          {wo.total_cost != null && <span className="font-semibold text-green-400"> · Total {formatCost(wo.total_cost)}</span>}
+        </div>
+      )}
+      {wo.due_date && <div className="text-[12px] text-white/50 mb-3">📅 Due {new Date(wo.due_date).toLocaleDateString()}</div>}
+      <div className="flex gap-1.5 mt-3 pt-3 border-t border-white/[0.05]">
+        {wo.status !== 'active'    && <button onClick={() => onStatus(wo.id,'active')}    className="text-[11px] px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-md font-medium hover:bg-amber-500/15 transition-colors">→ Active</button>}
+        {wo.status !== 'completed' && <button onClick={() => onStatus(wo.id,'completed')} className="text-[11px] px-2.5 py-1 bg-green-500/10 text-green-400 rounded-md font-medium hover:bg-green-500/15 transition-colors">✓ Done</button>}
+        {wo.status !== 'pending'   && <button onClick={() => onStatus(wo.id,'pending')}   className="text-[11px] px-2.5 py-1 bg-white/[0.06] text-white/60 rounded-md font-medium hover:bg-white/[0.10] transition-colors">↩ Pending</button>}
       </div>
     </div>
   );

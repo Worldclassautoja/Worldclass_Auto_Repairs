@@ -36,6 +36,8 @@ export default function TechDashboard() {
   const [completing, setCompleting] = useState<number | null>(null);
   const [actualHours, setActualHours] = useState('');
   const [view, setView]   = useState<'jobs' | 'timecard'>('jobs');
+  const [tcFrom, setTcFrom] = useState('');
+  const [tcTo, setTcTo]     = useState('');
 
   useEffect(() => {
     fetch('/api/technician/me')
@@ -88,11 +90,19 @@ export default function TechDashboard() {
   const queued    = wos.filter(w => w.status === 'pending');
   const completed = wos.filter(w => w.status === 'completed');
 
-  /* ── Time card calculations — Number() guards against Neon returning NUMERIC as strings ── */
-  const totalHours   = completed.reduce((s, w) => s + Number(w.actual_hours ?? 0), 0);
-  const totalRevenue = completed.reduce((s, w) => s + Number(w.total_cost  ?? 0), 0);
+  /* ── Time card calculations — filtered by optional date range ── */
+  const tcFiltered = completed.filter(w => {
+    if (!w.completed_at) return true;
+    const d = new Date(w.completed_at);
+    if (tcFrom && d < new Date(tcFrom + 'T00:00:00')) return false;
+    if (tcTo   && d > new Date(tcTo   + 'T23:59:59')) return false;
+    return true;
+  });
 
-  const byCategory = completed.reduce<Record<string, { count: number; hours: number; revenue: number }>>((acc, w) => {
+  const totalHours   = tcFiltered.reduce((s, w) => s + Number(w.actual_hours ?? 0), 0);
+  const totalRevenue = tcFiltered.reduce((s, w) => s + Number(w.total_cost  ?? 0), 0);
+
+  const byCategory = tcFiltered.reduce<Record<string, { count: number; hours: number; revenue: number }>>((acc, w) => {
     const key = w.service_type ?? 'Uncategorised';
     if (!acc[key]) acc[key] = { count: 0, hours: 0, revenue: 0 };
     acc[key].count++;
@@ -255,13 +265,34 @@ export default function TechDashboard() {
         {/* ── TIME CARD VIEW ── */}
         {!loading && view === 'timecard' && (
           <div>
-            <h2 className="text-[18px] font-bold text-white flex items-center gap-2 mb-6">
-              <BarChart3 size={20} className="text-primary" /> Work Order Time Card
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <h2 className="text-[18px] font-bold text-white flex items-center gap-2">
+                <BarChart3 size={20} className="text-primary" /> Work Order Time Card
+              </h2>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[12px] text-white/40 font-semibold">Filter:</span>
+                <input
+                  type="date" value={tcFrom} onChange={e => setTcFrom(e.target.value)}
+                  className="px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all"
+                  placeholder="From"
+                />
+                <span className="text-[12px] text-white/30">to</span>
+                <input
+                  type="date" value={tcTo} onChange={e => setTcTo(e.target.value)}
+                  className="px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all"
+                  placeholder="To"
+                />
+                {(tcFrom || tcTo) && (
+                  <button onClick={() => { setTcFrom(''); setTcTo(''); }} className="text-[12px] text-white/40 hover:text-white/70 px-2 py-1.5 border border-white/10 rounded-lg transition-colors">
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
 
             {/* Summary stats */}
             <div className="grid sm:grid-cols-3 gap-4 mb-8">
-              <StatCard label="Completed Jobs"          value={String(completed.length)} />
+              <StatCard label="Completed Jobs"          value={String(tcFiltered.length)} />
               <StatCard label="Total Hours Logged"      value={`${totalHours.toFixed(1)}h`} />
               <StatCard label="Total Revenue Generated" value={formatCost(totalRevenue)} highlight />
             </div>
@@ -309,7 +340,7 @@ export default function TechDashboard() {
             )}
 
             {/* Completed work orders log */}
-            {completed.length > 0 && (
+            {tcFiltered.length > 0 && (
               <div className="bg-[#111] border border-white/[0.07] rounded-xl overflow-hidden shadow-sm">
                 <div className="px-5 py-3.5 bg-white/[0.03] border-b border-white/[0.06]">
                   <div className="text-[12px] font-bold text-white/40 uppercase tracking-wide">Completed Work Orders</div>
@@ -323,7 +354,7 @@ export default function TechDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {completed.map(wo => {
+                    {tcFiltered.map(wo => {
                       const actualH = wo.actual_hours != null ? Number(wo.actual_hours) : null;
                       const estH    = wo.estimated_hours != null ? Number(wo.estimated_hours) : null;
                       const overEst = actualH != null && estH != null && actualH > estH;

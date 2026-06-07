@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const b = await req.json();
     const sql = getDb();
     const rows = await sql`
-      INSERT INTO work_orders (title, vehicle, customer_name, service_type, priority, assigned_to, estimated_hours, due_date, notes, base_cost, labor_rate)
+      INSERT INTO work_orders (title, vehicle, customer_name, service_type, priority, assigned_to, estimated_hours, due_date, notes, base_cost, labor_rate, booking_id)
       VALUES (
         ${b.title},
         ${b.vehicle ?? null},
@@ -40,7 +40,8 @@ export async function POST(req: NextRequest) {
         ${b.due_date || null},
         ${b.notes ?? null},
         ${b.base_cost != null ? Number(b.base_cost) : null},
-        ${b.labor_rate != null ? Number(b.labor_rate) : 3500}
+        ${b.labor_rate != null ? Number(b.labor_rate) : 3500},
+        ${b.booking_id || null}
       )
       RETURNING *
     `;
