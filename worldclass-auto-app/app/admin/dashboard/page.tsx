@@ -47,8 +47,9 @@ export default function AdminDashboard() {
   const [woSaving, setWoSaving] = useState(false);
   const [selectedPresets, setSelectedPresets] = useState<ServicePreset[]>([]);
 
-  /* Completed WOs visibility + time card filter */
+  /* Completed WOs / bookings visibility + time card filter */
   const [showCompleted, setShowCompleted] = useState(false);
+  const [showCompletedBookings, setShowCompletedBookings] = useState(false);
   const [tcFrom, setTcFrom] = useState('');
   const [tcTo,   setTcTo]   = useState('');
 
@@ -129,6 +130,15 @@ export default function AdminDashboard() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ assigned_to: techId, status: techId ? 'assigned' : 'pending' }),
+    });
+    load();
+  }
+
+  async function setBookingStatus(id: number, status: string) {
+    await fetch(`/api/bookings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
     });
     load();
   }
@@ -269,6 +279,8 @@ export default function AdminDashboard() {
   }
 
   /* ── Derived lists ── */
+  const activeBookings    = bookings.filter(b => b.status !== 'completed');
+  const completedBookings = bookings.filter(b => b.status === 'completed');
   const activeWOs    = workOrders.filter(w => w.status !== 'completed');
   const completedWOs = workOrders.filter(w => w.status === 'completed');
 
@@ -332,7 +344,10 @@ export default function AdminDashboard() {
         {!loading && tab === 'bookings' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-[18px] font-bold text-white flex items-center gap-2"><CalendarDays size={20} className="text-primary" /> Bookings <span className="text-white/35 font-normal text-sm">({bookings.length})</span></h2>
+              <h2 className="text-[18px] font-bold text-white flex items-center gap-2">
+                <CalendarDays size={20} className="text-primary" /> Bookings
+                <span className="text-white/35 font-normal text-sm">({activeBookings.length} active{completedBookings.length > 0 ? ` · ${completedBookings.length} done` : ''})</span>
+              </h2>
               <button onClick={() => setShowBookingForm(true)} className="flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-black text-[13px] font-bold px-4 py-2 rounded-lg transition-colors">
                 <Plus size={15} /> New Booking
               </button>
@@ -362,6 +377,7 @@ export default function AdminDashboard() {
               </div>
             )}
 
+            {/* ── Active / Pending bookings ── */}
             <div className="bg-[#111] border border-white/[0.08] rounded-xl overflow-hidden">
               <table className="w-full text-[13px]">
                 <thead className="bg-white/[0.03] border-b border-white/[0.06]">
@@ -372,64 +388,50 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {bookings.length === 0 && (
+                  {activeBookings.length === 0 && completedBookings.length === 0 && (
                     <tr><td colSpan={6} className="text-center py-12 text-white/35">No bookings yet.</td></tr>
                   )}
-                  {bookings.map(b => (
-                    <tr key={b.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <div className="font-semibold text-white/75">{new Date(b.preferred_date + 'T12:00:00').toLocaleDateString('en', { weekday:'short', month:'short', day:'numeric' })}</div>
-                        <span className={`inline-block mt-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${b.assigned_to ? 'bg-green-500/10 text-green-400' : 'bg-white/[0.06] text-white/40'}`}>
-                          {b.assigned_to ? 'Assigned' : 'Pending'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="font-medium text-white/90">{b.name}</div>
-                        <div className="text-[11px] text-white/35 mt-0.5">{b.phone} · {b.email}</div>
-                      </td>
-                      <td className="px-4 py-3 text-white/60">{b.vehicle_make} {b.vehicle_model}</td>
-                      <td className="px-4 py-3 max-w-[200px]">
-                        <div className="text-white/60 truncate">{b.service_type}</div>
-                        {b.description && (
-                          <div className="text-[11px] text-white/35 mt-0.5 line-clamp-2 whitespace-pre-line leading-snug">{b.description}</div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <select
-                          value={b.assigned_to ?? ''}
-                          onChange={e => assignBooking(b.id, e.target.value ? Number(e.target.value) : null)}
-                          className="w-full px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
-                        >
-                          <option value="">Unassigned</option>
-                          {techs.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                        </select>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <button
-                            onClick={() => convertToWO(b)}
-                            className="text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors whitespace-nowrap"
-                            title="Create a work order from this booking"
-                          >
-                            + Work Order
-                          </button>
-                          <button onClick={() => deleteBooking(b.id)} className="text-white/20 hover:text-red-400 transition-colors" title="Delete booking">
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                        {Number(b.wo_count) > 0 && (
-                          <div className="text-[11px] text-white/40">
-                            {b.wo_count} WO{Number(b.wo_count) !== 1 ? 's' : ''}
-                            {b.total_est_hours != null && ` · ${Number(b.total_est_hours).toFixed(1)}h`}
-                            {b.total_cost != null && <span className="text-green-400 font-semibold"> · {formatCost(b.total_cost)}</span>}
-                          </div>
-                        )}
-                      </td>
-                    </tr>
+                  {activeBookings.length === 0 && completedBookings.length > 0 && (
+                    <tr><td colSpan={6} className="text-center py-10 text-white/35 text-[13px]">All bookings are completed — see below.</td></tr>
+                  )}
+                  {activeBookings.map(b => (
+                    <BookingRow key={b.id} b={b} techs={techs} onAssign={assignBooking} onConvert={convertToWO} onDelete={deleteBooking} onStatus={setBookingStatus} />
                   ))}
                 </tbody>
               </table>
             </div>
+
+            {/* ── Completed bookings (collapsible) ── */}
+            {completedBookings.length > 0 && (
+              <div className="mt-6">
+                <button
+                  onClick={() => setShowCompletedBookings(v => !v)}
+                  className="flex items-center gap-2 text-[13px] font-semibold text-white/50 hover:text-white/75 transition-colors mb-4"
+                >
+                  {showCompletedBookings ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+                  Completed Bookings
+                  <span className="bg-green-500/10 text-green-400 text-[11px] font-bold px-2 py-0.5 rounded-full ml-1">{completedBookings.length}</span>
+                </button>
+                {showCompletedBookings && (
+                  <div className="bg-[#111] border border-white/[0.08] rounded-xl overflow-hidden opacity-75">
+                    <table className="w-full text-[13px]">
+                      <thead className="bg-white/[0.03] border-b border-white/[0.06]">
+                        <tr>
+                          {['Date','Customer','Vehicle','Service','Assigned To',''].map(h => (
+                            <th key={h} className="text-left px-4 py-3 text-[11px] font-bold text-white/35 uppercase tracking-wide">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {completedBookings.map(b => (
+                          <BookingRow key={b.id} b={b} techs={techs} onAssign={assignBooking} onConvert={convertToWO} onDelete={deleteBooking} onStatus={setBookingStatus} completed />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -782,6 +784,96 @@ function WOCard({ wo, onDelete, onStatus, dimmed }: {
         {wo.status !== 'pending'   && <button onClick={() => onStatus(wo.id,'pending')}   className="text-[11px] px-2.5 py-1 bg-white/[0.06] text-white/60 rounded-md font-medium hover:bg-white/[0.10] transition-colors">↩ Pending</button>}
       </div>
     </div>
+  );
+}
+
+function BookingRow({ b, techs, onAssign, onConvert, onDelete, onStatus, completed }: {
+  b: Booking;
+  techs: Technician[];
+  onAssign: (id: number, techId: number | null) => void;
+  onConvert: (b: Booking) => void;
+  onDelete: (id: number) => void;
+  onStatus: (id: number, status: string) => void;
+  completed?: boolean;
+}) {
+  const statusBadge = completed
+    ? 'bg-green-500/10 text-green-400'
+    : b.assigned_to
+      ? 'bg-amber-500/10 text-amber-400'
+      : 'bg-white/[0.06] text-white/40';
+  const statusLabel = completed ? 'Completed' : b.assigned_to ? 'Assigned' : 'Pending';
+
+  return (
+    <tr className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+      <td className="px-4 py-3 whitespace-nowrap">
+        <div className="font-semibold text-white/75">{new Date(b.preferred_date + 'T12:00:00').toLocaleDateString('en', { weekday:'short', month:'short', day:'numeric' })}</div>
+        <span className={`inline-block mt-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${statusBadge}`}>{statusLabel}</span>
+      </td>
+      <td className="px-4 py-3">
+        <div className="font-medium text-white/90">{b.name}</div>
+        <div className="text-[11px] text-white/35 mt-0.5">{b.phone} · {b.email}</div>
+      </td>
+      <td className="px-4 py-3 text-white/60">{b.vehicle_make} {b.vehicle_model}</td>
+      <td className="px-4 py-3 max-w-[200px]">
+        <div className="text-white/60 truncate">{b.service_type}</div>
+        {b.description && (
+          <div className="text-[11px] text-white/35 mt-0.5 line-clamp-2 whitespace-pre-line leading-snug">{b.description}</div>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        {completed ? (
+          <span className="text-[12px] text-white/40">{b.tech_name ?? 'Unassigned'}</span>
+        ) : (
+          <select
+            value={b.assigned_to ?? ''}
+            onChange={e => onAssign(b.id, e.target.value ? Number(e.target.value) : null)}
+            className="w-full px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
+          >
+            <option value="">Unassigned</option>
+            {techs.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-2 mb-1.5">
+          {completed ? (
+            <button
+              onClick={() => onStatus(b.id, b.assigned_to ? 'assigned' : 'pending')}
+              className="text-[11px] font-semibold px-2.5 py-1 bg-white/[0.06] text-white/50 hover:bg-white/[0.10] hover:text-white/80 rounded-md transition-colors whitespace-nowrap"
+            >
+              ↩ Reopen
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => onConvert(b)}
+                className="text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors whitespace-nowrap"
+                title="Create a work order from this booking"
+              >
+                + Work Order
+              </button>
+              <button
+                onClick={() => onStatus(b.id, 'completed')}
+                className="text-[11px] font-semibold px-2.5 py-1 bg-green-500/10 text-green-400 hover:bg-green-500/15 rounded-md transition-colors whitespace-nowrap"
+                title="Mark booking as completed"
+              >
+                ✓ Done
+              </button>
+            </>
+          )}
+          <button onClick={() => onDelete(b.id)} className="text-white/20 hover:text-red-400 transition-colors" title="Delete booking">
+            <Trash2 size={14} />
+          </button>
+        </div>
+        {Number(b.wo_count) > 0 && (
+          <div className="text-[11px] text-white/40">
+            {b.wo_count} WO{Number(b.wo_count) !== 1 ? 's' : ''}
+            {b.total_est_hours != null && ` · ${Number(b.total_est_hours).toFixed(1)}h`}
+            {b.total_cost != null && <span className="text-green-400 font-semibold"> · {formatCost(b.total_cost)}</span>}
+          </div>
+        )}
+      </td>
+    </tr>
   );
 }
 

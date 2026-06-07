@@ -30,7 +30,28 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   values.push(id);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rows = await (sql as any)(`UPDATE work_orders SET ${setClause} WHERE id = $${values.length} RETURNING *`, values);
-  return NextResponse.json(rows[0]);
+  const wo = rows[0];
+
+  /* Auto-sync parent booking status when a WO status changes */
+  if ('status' in b && wo?.booking_id) {
+    const bookingId = wo.booking_id;
+    if (b.status === 'completed') {
+      /* If every WO for this booking is now completed, mark booking completed */
+      const stats = await sql`
+        SELECT COUNT(*) AS total,
+               COUNT(*) FILTER (WHERE status = 'completed') AS done
+        FROM work_orders WHERE booking_id = ${bookingId}
+      `;
+      if (Number(stats[0].total) > 0 && Number(stats[0].total) === Number(stats[0].done)) {
+        await sql`UPDATE bookings SET status = 'completed' WHERE id = ${bookingId}`;
+      }
+    } else {
+      /* WO moved back from completed — reopen the booking if it was marked complete */
+      await sql`UPDATE bookings SET status = 'assigned' WHERE id = ${bookingId} AND status = 'completed'`;
+    }
+  }
+
+  return NextResponse.json(wo);
 }
 
 /* DELETE — remove WO */
