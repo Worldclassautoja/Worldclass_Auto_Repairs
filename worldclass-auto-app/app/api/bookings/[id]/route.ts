@@ -9,6 +9,23 @@ function auth(req: NextRequest) {
   return token ? verifyToken(token) : null;
 }
 
+export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+  if (!auth(req)) return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
+  const id = Number(params.id);
+  if (!id) return NextResponse.json({ error: 'Invalid id.' }, { status: 400 });
+  const body = await req.json();
+  const sql = getDb();
+  const rows = await sql`
+    UPDATE bookings
+    SET
+      assigned_to = ${body.assigned_to ?? null},
+      status      = ${body.status ?? 'pending'}
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return NextResponse.json(rows[0]);
+}
+
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   if (!auth(req)) return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   const id = Number(params.id);

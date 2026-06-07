@@ -9,7 +9,7 @@ import {
 import { SERVICE_PRESETS, PRESET_CATEGORIES, formatCost } from '@/lib/presets';
 
 /* ─── Types ─────────────────────────────────────────────── */
-interface Booking { id: number; name: string; phone: string; email: string; vehicle_make: string; vehicle_model: string; service_type: string; preferred_date: string; description?: string; created_at: string; }
+interface Booking { id: number; name: string; phone: string; email: string; vehicle_make: string; vehicle_model: string; service_type: string; preferred_date: string; description?: string; created_at: string; assigned_to?: number; tech_name?: string; status: string; }
 interface WorkOrder { id: number; title: string; vehicle?: string; customer_name?: string; service_type?: string; status: string; priority: string; assigned_to?: number; tech_name?: string; estimated_hours?: number; actual_hours?: number; base_cost?: number; labor_rate?: number; total_cost?: number; due_date?: string; notes?: string; started_at?: string; completed_at?: string; created_at: string; }
 interface Technician { id: number; username: string; name: string; specialty?: string; is_active: boolean; active_wos: number; total_wos: number; }
 
@@ -117,6 +117,34 @@ export default function AdminDashboard() {
     if (!confirm('Delete this booking? This cannot be undone.')) return;
     await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
     load();
+  }
+
+  async function assignBooking(id: number, techId: number | null) {
+    await fetch(`/api/bookings/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ assigned_to: techId, status: techId ? 'assigned' : 'pending' }),
+    });
+    load();
+  }
+
+  function convertToWO(b: Booking) {
+    setWoForm({
+      title: `${b.service_type} — ${b.vehicle_make} ${b.vehicle_model}`,
+      customer_name: b.name,
+      vehicle: `${b.vehicle_make} ${b.vehicle_model}`,
+      service_type: b.service_type,
+      priority: 'medium',
+      assigned_to: b.assigned_to ? String(b.assigned_to) : '',
+      estimated_hours: '',
+      due_date: b.preferred_date,
+      notes: b.description ?? '',
+      base_cost: '',
+      labor_rate: '3500',
+    });
+    setSelectedPreset('');
+    setShowWoForm(true);
+    setTab('workorders');
   }
 
   function applyPreset(presetId: string) {
@@ -278,27 +306,52 @@ export default function AdminDashboard() {
               <table className="w-full text-[13px]">
                 <thead className="bg-white/[0.03] border-b border-white/[0.06]">
                   <tr>
-                    {['Date','Customer','Vehicle','Service','Phone','Email',''].map(h => (
+                    {['Date','Customer','Vehicle','Service','Assigned To',''].map(h => (
                       <th key={h} className="text-left px-4 py-3 text-[11px] font-bold text-white/35 uppercase tracking-wide">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {bookings.length === 0 && (
-                    <tr><td colSpan={7} className="text-center py-12 text-white/35">No bookings yet.</td></tr>
+                    <tr><td colSpan={6} className="text-center py-12 text-white/35">No bookings yet.</td></tr>
                   )}
                   {bookings.map(b => (
                     <tr key={b.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                      <td className="px-4 py-3 font-semibold text-white/75 whitespace-nowrap">{new Date(b.preferred_date).toLocaleDateString('en-JM', { weekday:'short', month:'short', day:'numeric' })}</td>
-                      <td className="px-4 py-3 font-medium text-white/90">{b.name}</td>
-                      <td className="px-4 py-3 text-white/60">{b.vehicle_make} {b.vehicle_model}</td>
-                      <td className="px-4 py-3 text-white/60 max-w-[180px] truncate">{b.service_type}</td>
-                      <td className="px-4 py-3 text-white/60">{b.phone}</td>
-                      <td className="px-4 py-3 text-white/50">{b.email}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="font-semibold text-white/75">{new Date(b.preferred_date + 'T12:00:00').toLocaleDateString('en', { weekday:'short', month:'short', day:'numeric' })}</div>
+                        <span className={`inline-block mt-0.5 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${b.assigned_to ? 'bg-green-500/10 text-green-400' : 'bg-white/[0.06] text-white/40'}`}>
+                          {b.assigned_to ? 'Assigned' : 'Pending'}
+                        </span>
+                      </td>
                       <td className="px-4 py-3">
-                        <button onClick={() => deleteBooking(b.id)} className="text-white/20 hover:text-red-400 transition-colors" title="Delete booking">
-                          <Trash2 size={14} />
-                        </button>
+                        <div className="font-medium text-white/90">{b.name}</div>
+                        <div className="text-[11px] text-white/35 mt-0.5">{b.phone} · {b.email}</div>
+                      </td>
+                      <td className="px-4 py-3 text-white/60">{b.vehicle_make} {b.vehicle_model}</td>
+                      <td className="px-4 py-3 text-white/60 max-w-[160px] truncate">{b.service_type}</td>
+                      <td className="px-4 py-3">
+                        <select
+                          value={b.assigned_to ?? ''}
+                          onChange={e => assignBooking(b.id, e.target.value ? Number(e.target.value) : null)}
+                          className="w-full px-2.5 py-1.5 border border-white/10 rounded-lg text-[12px] bg-[#1a1a1a] text-white [color-scheme:dark] focus:outline-none focus:border-primary/50 transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="">Unassigned</option>
+                          {techs.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        </select>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => convertToWO(b)}
+                            className="text-[11px] font-semibold px-2.5 py-1 bg-primary/10 text-primary hover:bg-primary/20 rounded-md transition-colors whitespace-nowrap"
+                            title="Create a work order from this booking"
+                          >
+                            + Work Order
+                          </button>
+                          <button onClick={() => deleteBooking(b.id)} className="text-white/20 hover:text-red-400 transition-colors" title="Delete booking">
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

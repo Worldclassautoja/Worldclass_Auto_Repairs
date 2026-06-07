@@ -21,7 +21,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Not authenticated.' }, { status: 401 });
   }
   const sql = getDb();
-  const rows = await sql`SELECT * FROM bookings ORDER BY created_at DESC`;
+  const rows = await sql`
+    SELECT b.*, t.name AS tech_name
+    FROM bookings b
+    LEFT JOIN technicians t ON t.id = b.assigned_to
+    ORDER BY b.created_at DESC
+  `;
   return NextResponse.json(rows, { headers: CORS });
 }
 
