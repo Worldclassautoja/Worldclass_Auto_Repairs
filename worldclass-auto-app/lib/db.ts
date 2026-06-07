@@ -4,7 +4,7 @@ import { neon } from '@neondatabase/serverless';
 // fetchConnectionCache keeps the underlying HTTP connection alive between
 // queries so Neon's cold-start doesn't drop the socket mid-request.
 const url = process.env.DATABASE_URL;
-const _sql = url ? neon(url, { fetchConnectionCache: true }) : null;
+const _sql = url ? neon(url) : null;
 
 export function getDb() {
   if (!_sql) throw new Error('DATABASE_URL is not set');
