@@ -88,16 +88,16 @@ export default function TechDashboard() {
   const queued    = wos.filter(w => w.status === 'pending');
   const completed = wos.filter(w => w.status === 'completed');
 
-  /* ── Time card calculations ── */
-  const totalHours   = completed.reduce((s, w) => s + (w.actual_hours ?? 0), 0);
-  const totalRevenue = completed.reduce((s, w) => s + (w.total_cost  ?? 0), 0);
+  /* ── Time card calculations — Number() guards against Neon returning NUMERIC as strings ── */
+  const totalHours   = completed.reduce((s, w) => s + Number(w.actual_hours ?? 0), 0);
+  const totalRevenue = completed.reduce((s, w) => s + Number(w.total_cost  ?? 0), 0);
 
   const byCategory = completed.reduce<Record<string, { count: number; hours: number; revenue: number }>>((acc, w) => {
     const key = w.service_type ?? 'Uncategorised';
     if (!acc[key]) acc[key] = { count: 0, hours: 0, revenue: 0 };
     acc[key].count++;
-    acc[key].hours   += w.actual_hours ?? 0;
-    acc[key].revenue += w.total_cost   ?? 0;
+    acc[key].hours   += Number(w.actual_hours ?? 0);
+    acc[key].revenue += Number(w.total_cost   ?? 0);
     return acc;
   }, {});
 
@@ -324,7 +324,9 @@ export default function TechDashboard() {
                   </thead>
                   <tbody>
                     {completed.map(wo => {
-                      const overEst = wo.actual_hours != null && wo.estimated_hours != null && wo.actual_hours > wo.estimated_hours;
+                      const actualH = wo.actual_hours != null ? Number(wo.actual_hours) : null;
+                      const estH    = wo.estimated_hours != null ? Number(wo.estimated_hours) : null;
+                      const overEst = actualH != null && estH != null && actualH > estH;
                       return (
                         <tr key={wo.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                           <td className="px-4 py-3">
@@ -334,11 +336,11 @@ export default function TechDashboard() {
                           <td className="px-4 py-3 text-white/55 text-[12px]">
                             {[wo.customer_name, wo.vehicle].filter(Boolean).join(' · ') || '—'}
                           </td>
-                          <td className="px-4 py-3 text-white/50">{wo.estimated_hours != null ? `${wo.estimated_hours}h` : '—'}</td>
+                          <td className="px-4 py-3 text-white/50">{estH != null ? `${estH}h` : '—'}</td>
                           <td className={`px-4 py-3 font-semibold ${overEst ? 'text-orange-400' : 'text-white/80'}`}>
-                            {wo.actual_hours != null ? `${wo.actual_hours}h` : '—'}
-                            {overEst && wo.estimated_hours != null && (
-                              <span className="text-[10px] font-normal block text-orange-400/70">+{(wo.actual_hours! - wo.estimated_hours).toFixed(1)}h over</span>
+                            {actualH != null ? `${actualH}h` : '—'}
+                            {overEst && estH != null && actualH != null && (
+                              <span className="text-[10px] font-normal block text-orange-400/70">+{(actualH - estH).toFixed(1)}h over</span>
                             )}
                           </td>
                           <td className="px-4 py-3 text-white/55">{wo.base_cost != null ? formatCost(wo.base_cost) : '—'}</td>

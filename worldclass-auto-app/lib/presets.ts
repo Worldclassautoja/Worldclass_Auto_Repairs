@@ -94,6 +94,8 @@ export function getPresetById(id: string): ServicePreset | undefined {
   return SERVICE_PRESETS.find(p => p.id === id);
 }
 
-export function formatCost(amount: number): string {
-  return `$${Math.round(amount).toLocaleString()}`;
+export function formatCost(amount: number | string | null | undefined): string {
+  const n = Number(amount ?? 0);
+  if (isNaN(n)) return '$0';
+  return `$${Math.round(n).toLocaleString()}`;
 }
