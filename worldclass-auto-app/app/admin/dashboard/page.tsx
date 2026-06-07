@@ -6,7 +6,7 @@ import {
   CalendarDays, ClipboardList, Users, LogOut,
   Plus, Trash2, RefreshCw, ChevronDown, BarChart3, ChevronUp,
 } from 'lucide-react';
-import { SERVICE_PRESETS, PRESET_CATEGORIES, formatCost } from '@/lib/presets';
+import { SERVICE_PRESETS, PRESET_CATEGORIES, formatCost, ServicePreset } from '@/lib/presets';
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface Booking { id: number; name: string; phone: string; email: string; vehicle_make: string; vehicle_model: string; service_type: string; preferred_date: string; description?: string; created_at: string; assigned_to?: number; tech_name?: string; status: string; wo_count: number; total_est_hours?: number; total_cost?: number; }
@@ -45,7 +45,7 @@ export default function AdminDashboard() {
   const [showWoForm, setShowWoForm] = useState(false);
   const [woError, setWoError] = useState('');
   const [woSaving, setWoSaving] = useState(false);
-  const [selectedPreset, setSelectedPreset] = useState('');
+  const [selectedPresets, setSelectedPresets] = useState<ServicePreset[]>([]);
 
   /* Completed WOs visibility + time card filter */
   const [showCompleted, setShowCompleted] = useState(false);
@@ -148,23 +148,45 @@ export default function AdminDashboard() {
       labor_rate: '3500',
       booking_id: String(b.id),
     });
-    setSelectedPreset('');
+    setSelectedPresets([]);
     setShowWoForm(true);
     setTab('workorders');
   }
 
-  function applyPreset(presetId: string) {
-    setSelectedPreset(presetId);
+  function addPreset(presetId: string) {
     if (!presetId) return;
     const p = SERVICE_PRESETS.find(x => x.id === presetId);
     if (!p) return;
+    setSelectedPresets(prev => {
+      if (prev.find(x => x.id === presetId)) return prev;
+      const next = [...prev, p];
+      applyPresetsToForm(next);
+      return next;
+    });
+  }
+
+  function removePreset(presetId: string) {
+    setSelectedPresets(prev => {
+      const next = prev.filter(x => x.id !== presetId);
+      applyPresetsToForm(next);
+      return next;
+    });
+  }
+
+  function applyPresetsToForm(presets: ServicePreset[]) {
+    if (presets.length === 0) return;
+    const totalHours = presets.reduce((s, p) => s + p.estimated_hours, 0);
+    const totalCost  = presets.reduce((s, p) => s + p.base_cost, 0);
+    const rate       = presets[0].labor_rate;
+    const title      = presets.map(p => p.name).join(' + ');
+    const cats       = Array.from(new Set(presets.map(p => p.category)));
     setWoForm(f => ({
       ...f,
-      title: p.name,
-      service_type: p.category,
-      estimated_hours: String(p.estimated_hours),
-      base_cost: String(p.base_cost),
-      labor_rate: String(p.labor_rate),
+      title,
+      service_type: cats.join(' / '),
+      estimated_hours: String(totalHours),
+      base_cost: String(totalCost),
+      labor_rate: String(rate),
     }));
   }
 
@@ -191,7 +213,7 @@ export default function AdminDashboard() {
         return;
       }
       setShowWoForm(false);
-      setSelectedPreset('');
+      setSelectedPresets([]);
       setWoForm({ title:'', vehicle:'', customer_name:'', service_type:'', priority:'medium', assigned_to:'', estimated_hours:'', due_date:'', notes:'', base_cost:'', labor_rate:'3500', booking_id:'' });
       await load();
     } catch {
@@ -366,7 +388,12 @@ export default function AdminDashboard() {
                         <div className="text-[11px] text-white/35 mt-0.5">{b.phone} · {b.email}</div>
                       </td>
                       <td className="px-4 py-3 text-white/60">{b.vehicle_make} {b.vehicle_model}</td>
-                      <td className="px-4 py-3 text-white/60 max-w-[160px] truncate">{b.service_type}</td>
+                      <td className="px-4 py-3 max-w-[200px]">
+                        <div className="text-white/60 truncate">{b.service_type}</div>
+                        {b.description && (
+                          <div className="text-[11px] text-white/35 mt-0.5 line-clamp-2 whitespace-pre-line leading-snug">{b.description}</div>
+                        )}
+                      </td>
                       <td className="px-4 py-3">
                         <select
                           value={b.assigned_to ?? ''}
@@ -421,19 +448,51 @@ export default function AdminDashboard() {
               <div className="bg-[#111] border border-white/[0.08] rounded-xl p-6 mb-6">
                 <h3 className="font-bold mb-4 text-[15px] text-white">Create Work Order</h3>
 
-                {/* ── Preset selector ── */}
+                {/* ── Multi-preset selector ── */}
                 <div className="mb-5 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
-                  <div className="text-[12px] font-bold text-amber-400 uppercase tracking-wide mb-2">Load from Service Preset</div>
+                  <div className="text-[12px] font-bold text-amber-400 uppercase tracking-wide mb-3">Service Presets</div>
+
+                  {/* Selected preset chips */}
+                  {selectedPresets.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {selectedPresets.map(p => (
+                        <div key={p.id} className="flex items-center gap-1.5 bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[12px] font-medium px-2.5 py-1 rounded-full">
+                          <span>{p.name}</span>
+                          <span className="text-amber-400/60">·</span>
+                          <span className="text-amber-400/80">{p.estimated_hours}h</span>
+                          <span className="text-amber-400/60">·</span>
+                          <span className="text-amber-400/80">{formatCost(p.base_cost)}</span>
+                          <button
+                            type="button"
+                            onClick={() => removePreset(p.id)}
+                            className="ml-1 text-amber-400/60 hover:text-red-400 transition-colors leading-none"
+                            title="Remove"
+                          >×</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Combined totals when 2+ presets */}
+                  {selectedPresets.length >= 2 && (
+                    <div className="mb-3 px-3 py-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[12px] text-amber-300">
+                      Combined: <strong>{selectedPresets.reduce((s, p) => s + p.estimated_hours, 0).toFixed(1)}h</strong>
+                      {' · '}
+                      Base <strong>{formatCost(selectedPresets.reduce((s, p) => s + p.base_cost, 0))}</strong>
+                    </div>
+                  )}
+
+                  {/* Add another preset dropdown */}
                   <div className="relative">
                     <select
                       className={fi() + ' cursor-pointer pr-8'}
-                      value={selectedPreset}
-                      onChange={e => applyPreset(e.target.value)}
+                      value=""
+                      onChange={e => addPreset(e.target.value)}
                     >
-                      <option value="">— Select a preset to auto-fill —</option>
+                      <option value="">{selectedPresets.length === 0 ? '— Select a service preset —' : '+ Add another preset'}</option>
                       {PRESET_CATEGORIES.map(cat => (
                         <optgroup key={cat} label={cat}>
-                          {SERVICE_PRESETS.filter(p => p.category === cat).map(p => (
+                          {SERVICE_PRESETS.filter(p => p.category === cat && !selectedPresets.find(s => s.id === p.id)).map(p => (
                             <option key={p.id} value={p.id}>
                               {p.name} · {p.estimated_hours}h · {formatCost(p.base_cost)}
                             </option>
@@ -443,9 +502,9 @@ export default function AdminDashboard() {
                     </select>
                     <ChevronDown size={13} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
                   </div>
-                  {selectedPreset && (
-                    <div className="mt-2 text-[12px] text-amber-400/80">
-                      Preset loaded — you can still edit any field below.
+                  {selectedPresets.length > 0 && (
+                    <div className="mt-2 text-[12px] text-amber-400/70">
+                      Totals applied to fields below — you can still edit them manually.
                     </div>
                   )}
                 </div>
@@ -485,7 +544,7 @@ export default function AdminDashboard() {
                   <button onClick={createWO} disabled={!woForm.title || woSaving} className="bg-primary hover:bg-primary-dark text-black font-bold text-sm px-5 py-2 rounded-lg disabled:opacity-50 transition-colors">
                     {woSaving ? 'Saving…' : 'Create'}
                   </button>
-                  <button onClick={() => { setShowWoForm(false); setWoError(''); setSelectedPreset(''); }} className="text-white/50 hover:text-white/80 text-sm px-4 py-2 border border-white/10 rounded-lg transition-colors">Cancel</button>
+                  <button onClick={() => { setShowWoForm(false); setWoError(''); setSelectedPresets([]); }} className="text-white/50 hover:text-white/80 text-sm px-4 py-2 border border-white/10 rounded-lg transition-colors">Cancel</button>
                 </div>
               </div>
             )}

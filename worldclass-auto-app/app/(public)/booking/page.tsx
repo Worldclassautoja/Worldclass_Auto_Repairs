@@ -36,6 +36,7 @@ export default function BookingPage() {
     make: '', model: '', modelOther: '', description: '',
   });
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [serviceNotes, setServiceNotes]         = useState<Record<string, string>>({});
   const [otherChecked, setOtherChecked]         = useState(false);
   const [otherText, setOtherText]               = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -77,9 +78,13 @@ export default function BookingPage() {
   }
 
   function toggleService(svc: string) {
-    setSelectedServices(prev =>
-      prev.includes(svc) ? prev.filter(s => s !== svc) : [...prev, svc]
-    );
+    setSelectedServices(prev => {
+      if (prev.includes(svc)) {
+        setServiceNotes(n => { const c = {...n}; delete c[svc]; return c; });
+        return prev.filter(s => s !== svc);
+      }
+      return [...prev, svc];
+    });
     setErrors(e => ({ ...e, service: '' }));
   }
 
@@ -103,7 +108,17 @@ export default function BookingPage() {
     if (!validate()) return;
     setSubmitting(true);
 
-    const allServices = [...selectedServices, ...(otherChecked && otherText.trim() ? [`Other: ${otherText.trim()}`] : [])];
+    const allServices = [...selectedServices, ...(otherChecked && otherText.trim() ? ['Other'] : [])];
+
+    // Build structured notes: one line per service that has a note
+    const notesLines: string[] = [];
+    selectedServices.forEach(svc => {
+      const n = serviceNotes[svc]?.trim();
+      if (n) notesLines.push(`${svc}: ${n}`);
+    });
+    if (otherChecked && otherText.trim()) notesLines.push(`Other: ${otherText.trim()}`);
+    if (form.description.trim()) notesLines.push(form.description.trim());
+    const description = notesLines.join('\n') || null;
 
     const body = {
       name: form.name.trim(),
@@ -113,7 +128,7 @@ export default function BookingPage() {
       vehicle_model: form.make === 'Other' ? form.modelOther.trim() : form.model,
       service_type: allServices.join(' · '),
       preferred_date: selectedDate!.toISOString().split('T')[0],
-      description: form.description.trim() || null,
+      description,
     };
 
     try {
@@ -266,55 +281,65 @@ export default function BookingPage() {
                     {PRESET_CATEGORIES.map(svc => {
                       const checked = selectedServices.includes(svc);
                       return (
-                        <button
-                          key={svc}
-                          type="button"
-                          onClick={() => toggleService(svc)}
-                          className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium text-left transition-all ${
-                            checked
-                              ? 'border-primary/50 bg-primary/8 text-white'
-                              : 'border-white/10 bg-[#1a1a1a] text-white/55 hover:border-white/25 hover:text-white/80'
-                          }`}
-                        >
-                          <span className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-                            checked ? 'bg-primary border-primary' : 'border-white/20'
-                          }`}>
-                            {checked && <Check size={10} strokeWidth={3} className="text-black" />}
-                          </span>
-                          {svc}
-                        </button>
+                        <div key={svc} className="flex flex-col gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => toggleService(svc)}
+                            className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium text-left transition-all ${
+                              checked
+                                ? 'border-primary/50 bg-primary/8 text-white'
+                                : 'border-white/10 bg-[#1a1a1a] text-white/55 hover:border-white/25 hover:text-white/80'
+                            }`}
+                          >
+                            <span className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
+                              checked ? 'bg-primary border-primary' : 'border-white/20'
+                            }`}>
+                              {checked && <Check size={10} strokeWidth={3} className="text-black" />}
+                            </span>
+                            {svc}
+                          </button>
+                          {checked && (
+                            <textarea
+                              rows={2}
+                              placeholder={`Describe what you need for ${svc} (optional)...`}
+                              value={serviceNotes[svc] ?? ''}
+                              onChange={e => setServiceNotes(n => ({ ...n, [svc]: e.target.value }))}
+                              className="w-full px-3 py-2 border border-primary/20 rounded-lg text-[12px] bg-primary/5 text-white placeholder:text-white/25 focus:outline-none focus:border-primary/40 transition-all resize-none"
+                            />
+                          )}
+                        </div>
                       );
                     })}
                     {/* Other option */}
-                    <button
-                      type="button"
-                      onClick={() => { setOtherChecked(v => !v); setErrors(e => ({ ...e, service: '' })); }}
-                      className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium text-left transition-all ${
-                        otherChecked
-                          ? 'border-primary/50 bg-primary/8 text-white'
-                          : 'border-white/10 bg-[#1a1a1a] text-white/55 hover:border-white/25 hover:text-white/80'
-                      }`}
-                    >
-                      <span className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
-                        otherChecked ? 'bg-primary border-primary' : 'border-white/20'
-                      }`}>
-                        {otherChecked && <Check size={10} strokeWidth={3} className="text-black" />}
-                      </span>
-                      Other
-                    </button>
-                  </div>
-                  {otherChecked && (
-                    <div className="mt-2">
-                      <input
-                        className={di(errors.otherText) + ' mt-1'}
-                        type="text"
-                        placeholder="Describe what you need..."
-                        value={otherText}
-                        onChange={e => { setOtherText(e.target.value); setErrors(er => ({ ...er, otherText: '' })); }}
-                      />
-                      {errors.otherText && <p className="text-[12px] text-red-400 mt-1.5">{errors.otherText}</p>}
+                    <div className="flex flex-col gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => { setOtherChecked(v => !v); setErrors(e => ({ ...e, service: '' })); }}
+                        className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg border text-[13px] font-medium text-left transition-all ${
+                          otherChecked
+                            ? 'border-primary/50 bg-primary/8 text-white'
+                            : 'border-white/10 bg-[#1a1a1a] text-white/55 hover:border-white/25 hover:text-white/80'
+                        }`}
+                      >
+                        <span className={`w-4 h-4 rounded flex items-center justify-center flex-shrink-0 border transition-colors ${
+                          otherChecked ? 'bg-primary border-primary' : 'border-white/20'
+                        }`}>
+                          {otherChecked && <Check size={10} strokeWidth={3} className="text-black" />}
+                        </span>
+                        Other
+                      </button>
+                      {otherChecked && (
+                        <textarea
+                          rows={2}
+                          placeholder="Describe what you need..."
+                          value={otherText}
+                          onChange={e => { setOtherText(e.target.value); setErrors(er => ({ ...er, otherText: '' })); }}
+                          className={`w-full px-3 py-2 border rounded-lg text-[12px] bg-primary/5 text-white placeholder:text-white/25 focus:outline-none transition-all resize-none ${errors.otherText ? 'border-red-400/60' : 'border-primary/20 focus:border-primary/40'}`}
+                        />
+                      )}
+                      {errors.otherText && <p className="text-[12px] text-red-400">{errors.otherText}</p>}
                     </div>
-                  )}
+                  </div>
                   {errors.service && <p className="text-[12px] text-red-400 mt-2">{errors.service}</p>}
                   {(selectedServices.length > 0 || (otherChecked && otherText.trim())) && (
                     <div className="mt-2 text-[12px] text-white/35">
