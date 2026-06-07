@@ -83,7 +83,7 @@ export default function TechDashboard() {
 
   async function logout() {
     await fetch('/api/technician/logout', { method: 'POST' });
-    router.push('/technician');
+    window.location.href = '/technician';
   }
 
   const active    = wos.filter(w => w.status === 'active');

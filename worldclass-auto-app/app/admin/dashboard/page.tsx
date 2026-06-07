@@ -87,7 +87,7 @@ export default function AdminDashboard() {
 
   async function logout() {
     await fetch('/api/admin/logout', { method: 'POST' });
-    router.push('/admin');
+    window.location.href = '/admin';
   }
 
   async function createBooking() {
