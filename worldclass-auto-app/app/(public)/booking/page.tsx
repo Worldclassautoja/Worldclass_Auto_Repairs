@@ -97,6 +97,9 @@ export default function BookingPage() {
     if (form.make === 'Other' ? !form.modelOther.trim() : !form.model) e.model = 'Please select your vehicle model.';
     const allServices = [...selectedServices, ...(otherChecked && otherText.trim() ? [`Other: ${otherText.trim()}`] : [])];
     if (allServices.length === 0) e.service = 'Please select at least one service.';
+    selectedServices.forEach(svc => {
+      if (!serviceNotes[svc]?.trim()) e[`note_${svc}`] = 'Please describe what you need for this service.';
+    });
     if (otherChecked && !otherText.trim()) e.otherText = 'Please describe what you need.';
     if (!selectedDate) e.date = 'Please select a preferred date.';
     setErrors(e);
@@ -299,13 +302,16 @@ export default function BookingPage() {
                             {svc}
                           </button>
                           {checked && (
-                            <textarea
-                              rows={2}
-                              placeholder={`Describe what you need for ${svc} (optional)...`}
-                              value={serviceNotes[svc] ?? ''}
-                              onChange={e => setServiceNotes(n => ({ ...n, [svc]: e.target.value }))}
-                              className="w-full px-3 py-2 border border-primary/20 rounded-lg text-[12px] bg-primary/5 text-white placeholder:text-white/25 focus:outline-none focus:border-primary/40 transition-all resize-none"
-                            />
+                            <div>
+                              <textarea
+                                rows={2}
+                                placeholder={`Describe what you need for ${svc}...`}
+                                value={serviceNotes[svc] ?? ''}
+                                onChange={e => { setServiceNotes(n => ({ ...n, [svc]: e.target.value })); setErrors(er => ({ ...er, [`note_${svc}`]: '' })); }}
+                                className={`w-full px-3 py-2 border rounded-lg text-[12px] bg-primary/5 text-white placeholder:text-white/25 focus:outline-none transition-all resize-none ${errors[`note_${svc}`] ? 'border-red-400/60 focus:border-red-400/60' : 'border-primary/20 focus:border-primary/40'}`}
+                              />
+                              {errors[`note_${svc}`] && <p className="text-[12px] text-red-400 mt-1">{errors[`note_${svc}`]}</p>}
+                            </div>
                           )}
                         </div>
                       );
