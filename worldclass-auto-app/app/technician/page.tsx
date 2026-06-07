@@ -17,17 +17,24 @@ export default function TechnicianLogin() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch('/api/technician/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      if (res.ok) {
-        router.push('/technician/dashboard');
-      } else {
-        const data = await res.json().catch(() => ({}));
-        setError(data.error ?? 'Invalid credentials.');
+      const body = JSON.stringify({ username, password });
+      const headers = { 'Content-Type': 'application/json' };
+
+      const techRes = await fetch('/api/technician/login', { method: 'POST', headers, body });
+      if (techRes.ok) {
+        window.location.href = '/technician/dashboard';
+        return;
       }
+
+      // If tech login failed, try admin credentials so admins don't get stuck here
+      const adminRes = await fetch('/api/admin/login', { method: 'POST', headers, body });
+      if (adminRes.ok) {
+        window.location.href = '/admin/dashboard';
+        return;
+      }
+
+      const data = await techRes.json().catch(() => ({}));
+      setError(data.error ?? 'Invalid credentials.');
     } catch {
       setError('Network error. Please try again.');
     } finally {
